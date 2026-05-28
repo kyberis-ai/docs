@@ -1,0 +1,32 @@
+---
+title: 'Evidence responses'
+description: 'Interpret claim-based evidence retrieval responses.'
+---
+
+Evidence responses support or weaken specific claims. Use focused evidence calls so each result maps to a clear question.
+
+## Claim types
+
+Use only these claim types:
+
+- `active_exploitation`
+- `sector_targeting`
+- `actor_association`
+- `campaign_association`
+- `malware_association`
+- `relevance_to_environment`
+- `observed_in_the_wild`
+
+## Key fields
+
+Look for evidence IDs, evidence type, source, published time, matched subject, confidence, and any pagination cursor fields.
+
+## Hydration
+
+Use `GET /v2/evidence/{evidence_id}` when a high-impact conclusion depends on details from a specific evidence item.
+
+Identifier-style IDs such as `ip--...` or `actor--...` can return synthetic hydration with no report payload. Prefer hydrating report-backed evidence IDs such as `report--...` when available.
+
+## Agent guidance
+
+Evidence can be sparse. If evidence is weak, say so and recommend validation instead of presenting a decisive conclusion.

@@ -1,0 +1,17 @@
+---
+title: 'Batch responses'
+description: 'Interpret per-item results from Kyberis batch endpoints.'
+---
+
+Batch endpoints return item-level outcomes. Agents should preserve the status of every item.
+
+## Agent behavior
+
+- Report successes, ambiguous items, validation failures, and access failures separately.
+- Preserve item indexes or input IDs so callers can map outputs back to inputs.
+- Retry only the items that failed for transient reasons.
+- Split oversized batches when you hit `batch_limit_exceeded` or plan-specific limits.
+
+## Do not hide partial failure
+
+A batch response can be useful even when some items fail. Summarize the successful items and clearly list items that need correction, new scopes, or smaller batches.

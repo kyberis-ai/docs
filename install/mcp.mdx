@@ -1,0 +1,75 @@
+---
+title: 'Install the Kyberis MCP server'
+description: 'Connect agent clients to Kyberis with a one-time connect token.'
+---
+
+Kyberis MCP lets supported agents call Kyberis tools without hand-writing REST requests. The setup flow uses a one-time connect token and returns a short-lived bearer credential for the MCP connection.
+
+## Prerequisites
+
+- Node.js 20 or newer
+- A one-time Kyberis connect token beginning with `kct_`
+- A supported client: `claude`, `codex`, `cursor`, or `generic`
+
+## Connect a client
+
+```bash
+npx -y @kyberis/mcp connect claude --token kct_abc123
+```
+
+Replace `claude` with your client name.
+
+```bash
+npx -y @kyberis/mcp connect cursor --token kct_abc123
+npx -y @kyberis/mcp connect codex --token kct_abc123
+npx -y @kyberis/mcp connect generic --token kct_abc123
+```
+
+The command exchanges the token through `/v2/mcp/connect-tokens/exchange` and prints client-specific configuration.
+
+## Options
+
+```bash
+npx -y @kyberis/mcp connect claude \
+  --token kct_abc123 \
+  --agent-label "SOC laptop Claude" \
+  --api-url "https://api.kyberis.ai"
+```
+
+Use `--json` when you need machine-readable configuration.
+
+```bash
+npx -y @kyberis/mcp connect generic --token kct_abc123 --json
+```
+
+## What the command returns
+
+The setup command returns:
+
+- `agent_id`: the registered agent identity
+- `mcp_url`: the MCP endpoint URL
+- `api_key_id`: the API key bound to this agent connection
+- `Authorization: Bearer <token>` header for the MCP client
+- client-specific configuration for Claude, Codex, Cursor, or generic MCP clients
+
+## Token errors
+
+Generate a new connect token when setup returns one of these conditions:
+
+| Error | Meaning |
+| --- | --- |
+| `connect_token_not_found` | The token does not exist. |
+| `connect_token_used` | The token was already exchanged. |
+| `connect_token_revoked` | The token was revoked. |
+| `connect_token_expired` | The token expired. |
+| `connect_token_wrong_client` | The token was created for a different client type. |
+
+## After connecting
+
+Run a simple prompt in your agent:
+
+```text
+Use Kyberis to check API health, then resolve CVE-2026-12345 as a CVE.
+```
+
+The agent should call Kyberis tools through MCP and preserve request IDs in any error report.

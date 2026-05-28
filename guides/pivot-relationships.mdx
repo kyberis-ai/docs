@@ -1,0 +1,31 @@
+---
+title: 'Pivot with relationships'
+description: 'Use bounded relationship retrieval to move from one canonical entity to related threat context.'
+---
+
+Use `/v2/relationships` after entity resolution when you need connected actors, campaigns, malware, sectors, indicators, or techniques.
+
+## Relationship types
+
+Supported relationship types include:
+
+- `actor`
+- `campaign`
+- `malware`
+- `sector`
+- `ioc`
+- `technique`
+
+For CVE subjects, `technique` pivots through the vulnerability described by the CVE.
+
+## Workflow
+
+1. Start from a resolved `subject` when possible.
+2. Request only the relationship types needed for the investigation.
+3. Keep `max_results` bounded.
+4. Hydrate important related entities before high-impact recommendations.
+5. Use evidence calls to validate material relationship claims.
+
+## Agent guidance
+
+Relationships are pivots, not proof by themselves. Treat high-impact links as leads until supporting evidence confirms them.

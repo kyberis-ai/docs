@@ -1,0 +1,31 @@
+---
+title: 'Relationship responses'
+description: 'Interpret bounded relationship pivots between canonical entities and related threat context.'
+---
+
+Relationship responses help agents discover pivots. Treat them as connected context, then validate important claims with evidence.
+
+## Key fields
+
+Relationship items may include:
+
+- related entity ID and name
+- relationship type
+- direction or role
+- confidence
+- supporting evidence references
+- pagination cursor fields
+
+## How to use relationships
+
+Use relationships to select the next investigation step:
+
+- Actor links can trigger actor assessments.
+- Malware links can trigger malware or generic threat assessment paths.
+- IOC links can trigger IOC assessment or blocking review.
+- Sector links can support environment relevance.
+- Technique links can guide detection and hunting.
+
+## Caveat
+
+Do not treat a relationship by itself as proof of current exploitation or targeting. Validate high-impact links with evidence.

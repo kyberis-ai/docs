@@ -1,0 +1,34 @@
+---
+title: 'Assessment responses'
+description: 'Interpret deterministic CVE, IOC, actor, environment, and generic threat assessment responses.'
+---
+
+Assessment endpoints turn resolved subject context and evidence into deterministic decision support.
+
+## Assessment endpoints
+
+- `/v2/threat-assessments`
+- `/v2/cve-assessments`
+- `/v2/actor-assessments`
+- `/v2/environment-assessments`
+- `/v2/ioc-assessments`
+
+## What to preserve
+
+- assessment result or verdict
+- score and confidence fields
+- rationale fields
+- evidence references
+- caveats
+- `trace_id`
+- request correlation fields
+
+## Subject and query modes
+
+For evidence, relationships, and assessments, provide exactly one of `subject` or `query`.
+
+Prefer `subject` after successful resolution. Use `query` for exact IOC strings, especially URLs or observables where canonicalization could lose important detail.
+
+## Reporting guidance
+
+Do not output a decisive remediation recommendation without evidence IDs or report references. Separate facts from inference.

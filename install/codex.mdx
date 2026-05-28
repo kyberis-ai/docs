@@ -1,0 +1,30 @@
+---
+title: 'Codex setup'
+description: 'Connect Codex to Kyberis through MCP.'
+---
+
+## Install
+
+```bash
+npx -y @kyberis/mcp connect codex --token kct_abc123
+```
+
+The command prints TOML for Codex MCP configuration:
+
+```toml
+[mcp_servers.kyberis]
+url = "<mcp_url>"
+headers = { Authorization = "Bearer <token>" }
+```
+
+## Verify
+
+Ask Codex:
+
+```text
+Use Kyberis to resolve CVE-2026-12345, retrieve active exploitation evidence, and run a CVE assessment.
+```
+
+## Recommended behavior
+
+Instruct Codex to preserve `request_id`, `run_id`, `step_id`, evidence IDs, confidence, and caveats in investigation summaries.

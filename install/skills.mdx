@@ -1,0 +1,42 @@
+---
+title: 'Install the Kyberis skill'
+description: 'Give coding agents Kyberis investigation playbooks, endpoint selection rules, and response handling guidance.'
+---
+
+A Kyberis skill teaches an agent how to conduct evidence-backed threat investigations. It does not replace authentication or MCP access. Use it with MCP whenever possible.
+
+## What the skill provides
+
+- Investigation workflow: resolve, evidence, relationships, assessment, hydration, final recommendation
+- Trigger classification for CVEs, IOCs, actors, broad topics, and environment triage
+- Endpoint selection rules
+- Response decision gates for ambiguity, access errors, quotas, and weak evidence
+- Output expectations for recommendations, confidence, evidence, caveats, and next actions
+
+## Install
+
+Install the Kyberis skill in your agent environment using the command provided by Kyberis or your administrator.
+
+```bash
+npx skills add <kyberis-skill-url>
+```
+
+If your organization distributes the skill through a private repository, use that repository URL instead.
+
+## Verify
+
+Ask your agent:
+
+```text
+Use the Kyberis skill. What workflow should you follow for a CVE-first investigation?
+```
+
+The answer should start with entity resolution, focused evidence retrieval, relationship pivots, and a CVE assessment.
+
+## Use with MCP
+
+The skill tells the agent how to investigate. MCP gives the agent tools to call Kyberis. Install both for the best experience.
+
+<Card title="Install MCP" icon="plug" href="/install/mcp">
+  Connect a supported agent client to Kyberis tools.
+</Card>

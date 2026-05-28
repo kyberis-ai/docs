@@ -1,133 +1,48 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
-icon: 'star'
+title: 'Kyberis developer portal'
+description: 'Install Kyberis in your agent and use deterministic threat intelligence APIs for evidence-backed investigations.'
 ---
 
-## Setting up
+Kyberis helps agents and security teams decide what matters now. Use it to resolve threat entities, retrieve bounded evidence, pivot through relationships, prioritize signals for an environment, and produce deterministic assessments.
 
-Get your documentation site up and running in minutes.
-
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
-
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={2}>
+  <Card title="Get started" icon="rocket" href="/quickstart">
+    Make your first authenticated request, resolve an entity, and run an assessment.
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Install MCP" icon="plug" href="/install/mcp">
+    Connect Claude, Cursor, Codex, or a generic MCP client to Kyberis.
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="Investigate a CVE" icon="shield-alert" href="/guides/investigate-cve">
+    Validate active exploitation, relationships, evidence, and remediation priority.
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="Interpret responses" icon="braces" href="/responses/overview">
+    Understand resolution states, evidence, rankings, assessments, batches, and errors.
   </Card>
-</Columns>
+</CardGroup>
 
-## Create beautiful pages
+## What Kyberis returns
 
-Everything you need to create world-class documentation.
+Kyberis APIs return structured JSON for machine consumers. Serving-path assessment generation is deterministic and LLM-free, so agents can branch on fields such as `resolution.status`, `priority_score`, `confidence_score`, evidence IDs, and `error_code`.
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+## Recommended workflow
 
-## Make your content agent ready
+1. Resolve raw input with `/v2/entity-resolution` unless the request is broad discovery.
+2. Retrieve claim-level evidence with `/v2/evidence`.
+3. Pivot with `/v2/relationships` when you need related actors, campaigns, malware, sectors, or indicators.
+4. Rank environment-relevant signals with `/v2/prioritize`.
+5. Run the specific assessment endpoint for the subject type.
+6. Preserve `request_id`, `run_id`, `step_id`, confidence, caveats, and evidence references in your final answer.
 
-Make your docs work for humans and AI agents alike.
+## Build paths
 
-<Columns cols={2}>
-  <Card
-    title="Prompt component"
-    icon="robot"
-    href="/agent-ready/prompt"
-  >
-    Embed shareable AI prompts readers can copy or open in Cursor.
+<CardGroup cols={3}>
+  <Card title="API keys" icon="key" href="/development">
+    Authenticate directly with REST APIs or mint short-lived bearer tokens.
   </Card>
-  <Card
-    title="Visibility"
-    icon="eye"
-    href="/agent-ready/visibility"
-  >
-    Show different content to humans and agents reading your docs.
+  <Card title="Skills" icon="sparkles" href="/install/skills">
+    Give coding agents Kyberis investigation playbooks and response rules.
   </Card>
-  <Card
-    title="Contextual menu"
-    icon="bolt"
-    href="/agent-ready/contextual"
-  >
-    Give readers one-click access to Claude, ChatGPT, Cursor, and more.
+  <Card title="API reference" icon="book-open" href="/api-reference/introduction">
+    Explore every endpoint from the OpenAPI specification.
   </Card>
-  <Card
-    title="AI coding tools"
-    icon="wand-magic-sparkles"
-    href="/ai-tools/claude-code"
-  >
-    Set up Claude Code, Cursor, or Windsurf with Mintlify's skill.
-  </Card>
-</Columns>
-
-## Need inspiration?
-
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+</CardGroup>

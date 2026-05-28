@@ -1,0 +1,40 @@
+---
+title: 'Windsurf setup'
+description: 'Connect Windsurf or another generic MCP client to Kyberis.'
+---
+
+The Kyberis MCP CLI currently emits first-class configurations for `claude`, `codex`, `cursor`, and `generic`. Use the generic output for Windsurf if your Windsurf MCP configuration accepts HTTP MCP servers.
+
+## Install
+
+```bash
+npx -y @kyberis/mcp connect generic --token kct_abc123 --json
+```
+
+Copy the `mcpServers.kyberis` object into Windsurf's MCP configuration.
+
+```json
+{
+  "mcpServers": {
+    "kyberis": {
+      "type": "http",
+      "url": "<mcp_url>",
+      "headers": {
+        "Authorization": "Bearer <token>"
+      }
+    }
+  }
+}
+```
+
+## Verify
+
+Ask Windsurf:
+
+```text
+Use Kyberis to prioritize current threats for a healthcare environment running Microsoft Exchange and Okta.
+```
+
+## Notes
+
+If your Windsurf build requires a different MCP config format, use the same values: HTTP transport, Kyberis MCP URL, and `Authorization: Bearer <token>`.

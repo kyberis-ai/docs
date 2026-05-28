@@ -1,0 +1,26 @@
+---
+title: 'Response model'
+description: 'Understand how Kyberis responses support deterministic agent branching and evidence-backed reporting.'
+---
+
+Kyberis responses are designed for machine consumers. Agents should branch on stable fields, preserve correlation IDs, and avoid hiding uncertainty.
+
+## Always preserve
+
+- `request_id` or `X-Request-ID`
+- `run_id` and `step_id` when present
+- evidence IDs and report refs
+- confidence values
+- caveats and unresolved gaps
+- response status for each batch item
+
+## Core response families
+
+<CardGroup cols={2}>
+  <Card title="Resolution" icon="scan-search" href="/responses/resolution" />
+  <Card title="Evidence" icon="file-search" href="/responses/evidence" />
+  <Card title="Relationships" icon="git-branch" href="/responses/relationships" />
+  <Card title="Prioritize" icon="list-ordered" href="/responses/prioritize" />
+  <Card title="Assessments" icon="shield-check" href="/responses/assessments" />
+  <Card title="Errors" icon="triangle-alert" href="/responses/errors" />
+</CardGroup>
