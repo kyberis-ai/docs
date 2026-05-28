@@ -108,23 +108,29 @@ Use this default workflow for threat investigations:
 ## Endpoint groups
 
 <CardGroup cols={2}>
+  <Card title="Health" icon="heart-pulse" href="/api-reference/endpoint/health">
+    Check authenticated service availability.
+  </Card>
   <Card title="Auth" icon="key" href="/api-reference/endpoint/auth-token">
     Mint tokens, manage API keys, and connect MCP clients.
   </Card>
-  <Card title="Resolution" icon="scan-search" href="/api-reference/endpoint/entity-resolution">
+  <Card title="Resolution" icon="magnifying-glass" href="/api-reference/endpoint/entity-resolution">
     Normalize raw inputs into canonical Kyberis entities.
   </Card>
-  <Card title="Evidence" icon="file-search" href="/api-reference/endpoint/evidence">
-    Retrieve bounded evidence for specific claims.
+  <Card title="Intel and evidence" icon="file-search" href="/api-reference/endpoint/intel-search">
+    Search intelligence and retrieve bounded evidence for specific claims.
   </Card>
-  <Card title="Relationships" icon="git-branch" href="/api-reference/endpoint/relationships">
+  <Card title="Relationships" icon="code-branch" href="/api-reference/endpoint/relationships">
     Pivot through bounded relationships for canonical entities.
   </Card>
-  <Card title="Prioritize" icon="list-ordered" href="/api-reference/endpoint/prioritize">
+  <Card title="Prioritize" icon="arrow-up-wide-short" href="/api-reference/endpoint/prioritize">
     Rank signals by environment-aware deterministic relevance.
   </Card>
   <Card title="Assessments" icon="shield-check" href="/api-reference/endpoint/threat-assessments">
     Produce structured CVE, actor, IOC, environment, and threat assessments.
+  </Card>
+  <Card title="Internal MCP" icon="plug" href="/api-reference/endpoint/internal-mcp-api-keys-list">
+    Manage internal MCP bindings, clients, and bound tokens.
   </Card>
 </CardGroup>
 
