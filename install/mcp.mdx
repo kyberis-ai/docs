@@ -10,7 +10,7 @@ Install the [Kyberis skill](/install/skills) as well when your agent supports sk
 ## Prerequisites
 
 - Node.js 20 or newer
-- A one-time Kyberis connect token beginning with `kct_`
+- A one-time Kyberis connect token from [API keys](https://app.kyberis.ai/api-keys), beginning with `kct_`
 - A supported client: `claude`, `codex`, `cursor`, `windsurf`, or `generic`
 
 ## Connect a client
@@ -28,7 +28,7 @@ npx -y @kyberis-ai/mcp connect windsurf --token kct_abc123
 npx -y @kyberis-ai/mcp connect generic --token kct_abc123 --json
 ```
 
-The command exchanges the token through `/v2/mcp/connect-tokens/exchange` and configures supported clients by default.
+The command exchanges the token with Kyberis and configures supported clients by default.
 
 ## Options
 
@@ -76,7 +76,7 @@ The setup command returns:
 
 ## Token errors
 
-Generate a new connect token when setup returns one of these conditions:
+Generate a new connect token from [API keys](https://app.kyberis.ai/api-keys) when setup returns one of these conditions:
 
 | Error | Meaning |
 | --- | --- |
@@ -91,7 +91,7 @@ Generate a new connect token when setup returns one of these conditions:
 Run a simple prompt in your agent:
 
 ```text
-Use Kyberis to check API health, then resolve CVE-2026-12345 as a CVE.
+Use Kyberis to check API health, then resolve CVE-2024-3094 as a CVE.
 ```
 
 The agent should call Kyberis tools through MCP and preserve request IDs in any error report.

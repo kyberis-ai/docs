@@ -24,13 +24,15 @@
           {
             "group": "Install Kyberis",
             "pages": [
+              "install/overview",
               "install/skills",
               "install/mcp",
               "install/claude-code",
               "install/cursor",
               "install/codex",
               "install/windsurf",
-              "install/other-agents"
+              "install/other-agents",
+              "install/troubleshooting"
             ]
           },
           {
@@ -81,9 +83,7 @@
               "api-reference/endpoint/api-keys-list",
               "api-reference/endpoint/api-keys-create",
               "api-reference/endpoint/api-keys-update",
-              "api-reference/endpoint/api-keys-delete",
-              "api-reference/endpoint/mcp-connect-tokens-create",
-              "api-reference/endpoint/mcp-connect-tokens-exchange"
+              "api-reference/endpoint/api-keys-delete"
             ]
           },
           {
@@ -125,18 +125,6 @@
               "api-reference/endpoint/environment-assessments",
               "api-reference/endpoint/ioc-assessments",
               "api-reference/endpoint/assessments-batch"
-            ]
-          },
-          {
-            "group": "Internal MCP",
-            "pages": [
-              "api-reference/endpoint/internal-mcp-api-keys-list",
-              "api-reference/endpoint/internal-mcp-api-keys-create",
-              "api-reference/endpoint/internal-mcp-bindings-get",
-              "api-reference/endpoint/internal-mcp-bindings-upsert",
-              "api-reference/endpoint/internal-mcp-bindings-delete",
-              "api-reference/endpoint/internal-mcp-clients-list",
-              "api-reference/endpoint/internal-mcp-mint-bound-token"
             ]
           }
         ]
@@ -187,6 +175,8 @@
     ]
   },
   "footer": {
-    "socials": {}
+    "socials": {
+      "linkedin": "https://www.linkedin.com/company/kyberis-ai"
+    }
   }
 }

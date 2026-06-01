@@ -3,7 +3,7 @@ title: 'Quickstart'
 description: 'Call Kyberis directly, resolve an entity, retrieve evidence, and run a deterministic assessment.'
 ---
 
-This quickstart uses direct REST calls. For agent-native access, start with [Install MCP](/install/mcp).
+This quickstart uses direct REST calls. For agent-native access, start with [Set up Kyberis in your agent](/install/overview).
 
 ## Prerequisites
 
@@ -21,11 +21,51 @@ export KYBERIS_API_KEY_SECRET="<secret>"
 
 ## Check health
 
-```bash
+<CodeGroup>
+
+```bash cURL
 curl -sS "$KYBERIS_BASE_URL/v2/health" \
   -H "Authorization: ApiKey $KYBERIS_API_KEY_ID:$KYBERIS_API_KEY_SECRET" \
   -H "Accept: application/json"
 ```
+
+```javascript Node.js
+const baseUrl = process.env.KYBERIS_BASE_URL ?? 'https://api.kyberis.ai';
+const keyId = process.env.KYBERIS_API_KEY_ID;
+const secret = process.env.KYBERIS_API_KEY_SECRET;
+
+const response = await fetch(`${baseUrl}/v2/health`, {
+  headers: {
+    Authorization: `ApiKey ${keyId}:${secret}`,
+    Accept: 'application/json',
+  },
+});
+
+console.log(await response.json());
+```
+
+```python Python
+import json
+import os
+import urllib.request
+
+base_url = os.environ.get('KYBERIS_BASE_URL', 'https://api.kyberis.ai')
+key_id = os.environ['KYBERIS_API_KEY_ID']
+secret = os.environ['KYBERIS_API_KEY_SECRET']
+
+request = urllib.request.Request(
+    f'{base_url}/v2/health',
+    headers={
+        'Authorization': f'ApiKey {key_id}:{secret}',
+        'Accept': 'application/json',
+    },
+)
+
+with urllib.request.urlopen(request) as response:
+    print(json.load(response))
+```
+
+</CodeGroup>
 
 A successful response confirms your credentials can reach the API.
 
@@ -58,7 +98,7 @@ curl -sS -X POST "$KYBERIS_BASE_URL/v2/entity-resolution" \
       "run_id": "run-quickstart-001",
       "step_id": "step-01"
     },
-    "query": "CVE-2026-12345",
+    "query": "CVE-2024-3094",
     "expected_types": ["cve"],
     "resolution": {
       "max_results": 5,
@@ -90,7 +130,7 @@ curl -sS -X POST "$KYBERIS_BASE_URL/v2/evidence" \
       "run_id": "run-quickstart-001",
       "step_id": "step-02"
     },
-    "query": "CVE-2026-12345",
+    "query": "CVE-2024-3094",
     "claim_type": "active_exploitation",
     "max_results": 5
   }'
@@ -112,10 +152,10 @@ curl -sS -X POST "$KYBERIS_BASE_URL/v2/cve-assessments" \
       "run_id": "run-quickstart-001",
       "step_id": "step-03"
     },
-    "query": "CVE-2026-12345",
+    "query": "CVE-2024-3094",
     "context": {
-      "targeted_industries": ["healthcare"],
-      "known_targets": ["Microsoft Exchange"],
+      "targeted_industries": ["technology"],
+      "known_targets": ["XZ Utils 5.6.0", "XZ Utils 5.6.1"],
       "intel_confidence": "medium"
     }
   }'
@@ -124,6 +164,6 @@ curl -sS -X POST "$KYBERIS_BASE_URL/v2/cve-assessments" \
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Install MCP" icon="/icons/mcp.svg" href="/install/mcp" />
+  <Card title="Set up an agent" icon="/icons/mcp.svg" href="/install/overview" />
   <Card title="Interpret responses" icon="/icons/responses.svg" href="/responses/overview" />
 </CardGroup>

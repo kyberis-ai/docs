@@ -65,7 +65,7 @@ Allowed `workflow_stage` values include `resolve`, `evidence`,
 ```json
 {
   "agent_context": {
-    "objective": "Determine whether CVE-2026-12345 is relevant to our environment.",
+    "objective": "Determine whether CVE-2024-3094 is relevant to our environment.",
     "requested_outcome": "Return evidence and a deterministic assessment.",
     "workflow_stage": "assessment",
     "run_id": "run-20260527-001",
@@ -112,7 +112,7 @@ Use this default workflow for threat investigations:
     Check authenticated service availability.
   </Card>
   <Card title="Auth" icon="key" href="/api-reference/endpoint/auth-token">
-    Mint tokens, manage API keys, and connect MCP clients.
+    Mint bearer tokens and manage API keys.
   </Card>
   <Card title="Resolution" icon="magnifying-glass" href="/api-reference/endpoint/entity-resolution">
     Normalize raw inputs into canonical Kyberis entities.
@@ -128,9 +128,6 @@ Use this default workflow for threat investigations:
   </Card>
   <Card title="Assessments" icon="shield-check" href="/api-reference/endpoint/threat-assessments">
     Produce structured CVE, actor, IOC, environment, and threat assessments.
-  </Card>
-  <Card title="Internal MCP" icon="plug" href="/api-reference/endpoint/internal-mcp-api-keys-list">
-    Manage internal MCP bindings, clients, and bound tokens.
   </Card>
 </CardGroup>
 
