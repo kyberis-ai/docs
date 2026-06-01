@@ -11,7 +11,7 @@ Install the [Kyberis skill](/install/skills) as well when your agent supports sk
 
 - Node.js 20 or newer
 - A one-time Kyberis connect token beginning with `kct_`
-- A supported client: `claude`, `codex`, `cursor`, or `generic`
+- A supported client: `claude`, `codex`, `cursor`, `windsurf`, or `generic`
 
 ## Connect a client
 
@@ -24,10 +24,11 @@ Replace `claude` with your client name.
 ```bash
 npx -y @kyberis-ai/mcp connect cursor --token kct_abc123
 npx -y @kyberis-ai/mcp connect codex --token kct_abc123
-npx -y @kyberis-ai/mcp connect generic --token kct_abc123
+npx -y @kyberis-ai/mcp connect windsurf --token kct_abc123
+npx -y @kyberis-ai/mcp connect generic --token kct_abc123 --json
 ```
 
-The command exchanges the token through `/v2/mcp/connect-tokens/exchange` and prints client-specific configuration.
+The command exchanges the token through `/v2/mcp/connect-tokens/exchange` and configures supported clients by default.
 
 ## Options
 
@@ -38,11 +39,30 @@ npx -y @kyberis-ai/mcp connect claude \
   --api-url "https://api.kyberis.ai"
 ```
 
-Use `--json` when you need machine-readable configuration.
+Use `--dry-run` when you want configuration guidance without changing local client config.
+
+```bash
+npx -y @kyberis-ai/mcp connect windsurf --token kct_abc123 --dry-run
+```
+
+Use `--json` when you need machine-readable connection details. `--json` does not change local client config.
 
 ```bash
 npx -y @kyberis-ai/mcp connect generic --token kct_abc123 --json
 ```
+
+
+## Default configuration targets
+
+For supported clients, `@kyberis-ai/mcp` updates the local MCP configuration by default:
+
+| Client | Default action |
+| --- | --- |
+| Claude | Runs `claude mcp add --transport http kyberis ...` |
+| Codex | Updates `~/.codex/config.toml` |
+| Cursor | Updates `~/.cursor/mcp.json` |
+| Windsurf | Updates `~/.codeium/windsurf/mcp_config.json` |
+| Generic | No default install target; use `--dry-run` or `--json` and copy the config |
 
 ## What the command returns
 
@@ -52,7 +72,7 @@ The setup command returns:
 - `mcp_url`: the MCP endpoint URL
 - `api_key_id`: the API key bound to this agent connection
 - `Authorization: Bearer <token>` header for the MCP client
-- client-specific configuration for Claude, Codex, Cursor, or generic MCP clients
+- client-specific configuration for Claude, Codex, Cursor, Windsurf, or generic MCP clients
 
 ## Token errors
 

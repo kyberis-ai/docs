@@ -19,7 +19,13 @@ Use a one-time connect token from Kyberis:
 npx -y @kyberis-ai/mcp connect claude --token kct_abc123
 ```
 
-If the command does not update Claude automatically, it prints a command like this:
+The connector runs `claude mcp add` by default. Use `--dry-run` to print the command without changing local config:
+
+```bash
+npx -y @kyberis-ai/mcp connect claude --token kct_abc123 --dry-run
+```
+
+The dry run prints a command like this:
 
 ```bash
 claude mcp add --transport http kyberis '<mcp_url>' --header 'Authorization: Bearer <token>'

@@ -9,13 +9,13 @@ Install the generic Kyberis skill bundle into a directory your agent can read:
 npx -y @kyberis-ai/agent-skills install generic --dir ./kyberis-agent-skill
 ```
 
-Then connect MCP with the generic setup flow:
+Then connect MCP with the generic setup flow. Generic mode does not update a client config file automatically:
 
 ```bash
 npx -y @kyberis-ai/mcp connect generic --token kct_abc123 --json
 ```
 
-Configure your client with:
+Copy the returned values into your client configuration:
 
 - Transport: HTTP
 - Server URL: the returned `mcp_url`

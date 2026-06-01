@@ -17,7 +17,7 @@ npx -y @kyberis-ai/agent-skills install cursor
 npx -y @kyberis-ai/mcp connect cursor --token kct_abc123
 ```
 
-The command prints Cursor-compatible MCP JSON:
+The connector updates `~/.cursor/mcp.json` by default. Use `--dry-run` to print Cursor-compatible MCP JSON without changing local config:
 
 ```json
 {

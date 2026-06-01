@@ -17,7 +17,7 @@ npx -y @kyberis-ai/agent-skills install codex
 npx -y @kyberis-ai/mcp connect codex --token kct_abc123
 ```
 
-The command prints TOML for Codex MCP configuration:
+The connector updates `~/.codex/config.toml` by default. Use `--dry-run` to print TOML for Codex MCP configuration without changing local config:
 
 ```toml
 [mcp_servers.kyberis]

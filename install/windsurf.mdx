@@ -1,9 +1,7 @@
 ---
 title: 'Windsurf setup'
-description: 'Connect Windsurf or another generic MCP client to Kyberis.'
+description: 'Install the Kyberis skill and connect Windsurf to Kyberis through MCP.'
 ---
-
-The Kyberis MCP CLI currently emits first-class configurations for `claude`, `codex`, `cursor`, and `generic`. Use the generic output for Windsurf if your Windsurf MCP configuration accepts HTTP MCP servers.
 
 ## Install the skill
 
@@ -15,24 +13,24 @@ npx -y @kyberis-ai/agent-skills install windsurf
 
 ## Connect MCP
 
+Use a one-time connect token from Kyberis:
+
 ```bash
-npx -y @kyberis-ai/mcp connect generic --token kct_abc123 --json
+npx -y @kyberis-ai/mcp connect windsurf --token kct_abc123
 ```
 
-Copy the `mcpServers.kyberis` object into Windsurf's MCP configuration.
+The connector exchanges the token and updates Windsurf's MCP configuration at `~/.codeium/windsurf/mcp_config.json` by default.
 
-```json
-{
-  "mcpServers": {
-    "kyberis": {
-      "type": "http",
-      "url": "<mcp_url>",
-      "headers": {
-        "Authorization": "Bearer <token>"
-      }
-    }
-  }
-}
+Use `--dry-run` if you want to preview the configuration without changing local files:
+
+```bash
+npx -y @kyberis-ai/mcp connect windsurf --token kct_abc123 --dry-run
+```
+
+Use `--json` if you need machine-readable connection details:
+
+```bash
+npx -y @kyberis-ai/mcp connect windsurf --token kct_abc123 --json
 ```
 
 ## Verify
@@ -43,6 +41,8 @@ Ask Windsurf:
 Use Kyberis to prioritize current threats for a healthcare environment running Microsoft Exchange and Okta.
 ```
 
-## Notes
+## Troubleshooting
 
-If your Windsurf build requires a different MCP config format, use the same values: HTTP transport, Kyberis MCP URL, and `Authorization: Bearer <token>`.
+- If the connect token is expired or already used, generate a new setup command in Kyberis.
+- If Windsurf reports no Kyberis tools, check `~/.codeium/windsurf/mcp_config.json` and the bearer header.
+- If a tool returns `insufficient_scope`, ask for an API key with the required scopes.
