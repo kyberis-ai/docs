@@ -14,15 +14,15 @@ Kyberis MCP lets supported agents call Kyberis tools without hand-writing REST r
 ## Connect a client
 
 ```bash
-npx -y @kyberis/mcp connect claude --token kct_abc123
+npx -y @kyberis-ai/mcp connect claude --token kct_abc123
 ```
 
 Replace `claude` with your client name.
 
 ```bash
-npx -y @kyberis/mcp connect cursor --token kct_abc123
-npx -y @kyberis/mcp connect codex --token kct_abc123
-npx -y @kyberis/mcp connect generic --token kct_abc123
+npx -y @kyberis-ai/mcp connect cursor --token kct_abc123
+npx -y @kyberis-ai/mcp connect codex --token kct_abc123
+npx -y @kyberis-ai/mcp connect generic --token kct_abc123
 ```
 
 The command exchanges the token through `/v2/mcp/connect-tokens/exchange` and prints client-specific configuration.
@@ -30,7 +30,7 @@ The command exchanges the token through `/v2/mcp/connect-tokens/exchange` and pr
 ## Options
 
 ```bash
-npx -y @kyberis/mcp connect claude \
+npx -y @kyberis-ai/mcp connect claude \
   --token kct_abc123 \
   --agent-label "SOC laptop Claude" \
   --api-url "https://api.kyberis.ai"
@@ -39,7 +39,7 @@ npx -y @kyberis/mcp connect claude \
 Use `--json` when you need machine-readable configuration.
 
 ```bash
-npx -y @kyberis/mcp connect generic --token kct_abc123 --json
+npx -y @kyberis-ai/mcp connect generic --token kct_abc123 --json
 ```
 
 ## What the command returns
