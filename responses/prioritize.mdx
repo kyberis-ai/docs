@@ -1,0 +1,34 @@
+---
+title: 'Prioritize responses'
+description: 'Interpret environment-aware signal ranking responses.'
+---
+
+`/v2/prioritize` returns normalized signal cards ranked for the provided environment.
+
+## Item fields
+
+| Field | Meaning |
+| --- | --- |
+| `signal_id` | Stable signal identifier |
+| `title` | Short signal label |
+| `category` | Signal category such as vulnerability, campaign, actor activity, or IOC cluster |
+| `priority` | Human-readable urgency |
+| `priority_score` | Deterministic ranking score |
+| `confidence_score` | Confidence in the signal and supporting data |
+| `activity_level` | Current activity indicator |
+| `novelty_score` | Newness relative to request context |
+| `freshness_score` | Recency of supporting evidence |
+| `environment_match_reasons` | Why it matches the caller environment |
+| `suppression_reasons` | Why it was lowered or deprioritized |
+| `supporting_evidence` | Evidence references used in ranking |
+| `what_changed` | Meaningful change since prior view |
+| `recommended_action_type` | Action category |
+| `recommended_action_summary` | Short action guidance |
+
+## Meta fields
+
+`meta` can include candidate count, ranked count, truncation, requested and implemented categories, and budget details.
+
+## Agent guidance
+
+Validate the top items with evidence and relationships before recommending disruptive remediation.

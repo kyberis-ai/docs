@@ -1,0 +1,18 @@
+---
+title: 'Investigate a threat actor'
+description: 'Resolve actor aliases, pivot relationships, retrieve current activity evidence, and run an actor assessment.'
+---
+
+Use this workflow when the trigger is an actor name, alias, intrusion set, or suspected attribution.
+
+## Workflow
+
+1. Resolve the actor alias with `/v2/entity-resolution` and `expected_types: ["actor"]`.
+2. If ambiguous, return candidates instead of guessing.
+3. Pivot relationships to campaigns, malware, techniques, sectors, and indicators.
+4. Retrieve evidence for current activity, sector targeting, and campaign association.
+5. Run `/v2/actor-assessments`.
+
+## Reporting guidance
+
+Separate confirmed evidence from inferred relevance. Actor names and aliases are often reused or overloaded, so preserve resolution confidence and candidate details when the match is not exact.

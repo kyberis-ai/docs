@@ -1,33 +1,141 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: 'API reference'
+description: 'Threat Investigator API v2 for deterministic, evidence-backed threat intelligence workflows.'
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+The Kyberis Threat Investigator API helps machine consumers resolve entities,
+retrieve bounded evidence, pivot through relationships, prioritize signals, and
+produce deterministic threat assessments.
 
-## Welcome
+The API is intentionally LLM-free on the serving path. Use it when you need
+structured JSON outputs that are explainable, repeatable, and suitable for agent
+workflows.
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+## Base URL
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+```text
+https://api.kyberis.ai
+```
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+Kyberis supports long-lived API key credentials and short-lived machine bearer
+tokens.
+
+Use API key credentials for most agent-facing `/v2` endpoints:
+
+```http
+Authorization: ApiKey <key_id>:<secret>
+```
+
+Mint a short-lived bearer token from API key credentials:
+
+```http
+POST /v2/auth/token
+Authorization: ApiKey <key_id>:<secret>
+```
+
+Then call bearer-protected endpoints:
+
+```http
+Authorization: Bearer <access_token>
+```
+
+<Note>
+  The OpenAPI specification is the source of truth for which auth scheme each
+  endpoint accepts.
+</Note>
+
+## Agent context
+
+Most `POST /v2/*` investigation endpoints require an `agent_context` object so
+Kyberis can validate intent, correlate requests, and return auditable outputs.
+
+Required fields:
+
+- `objective`
+- `requested_outcome`
+- `workflow_stage`
+- `run_id`
+- `step_id`
+
+Allowed `workflow_stage` values include `resolve`, `evidence`,
+`relationships`, `assessment`, `hydrate`, `batch`, `finalize`, and `other`.
 
 ```json
-"security": [
-  {
-    "bearerAuth": []
+{
+  "agent_context": {
+    "objective": "Determine whether CVE-2024-3094 is relevant to our environment.",
+    "requested_outcome": "Return evidence and a deterministic assessment.",
+    "workflow_stage": "assessment",
+    "run_id": "run-20260527-001",
+    "step_id": "step-04"
   }
-]
+}
+```
+
+For `GET /v2/entities/{canonical_id}` and `GET /v2/evidence/{evidence_id}`,
+send the same context with request headers:
+
+- `X-Agent-Objective`
+- `X-Agent-Requested-Outcome`
+- `X-Agent-Workflow-Stage`
+- `X-Agent-Run-ID`
+- `X-Agent-Step-ID`
+
+## Request correlation
+
+You can send `X-Request-ID` on any request. Responses include `X-Request-ID`
+with either your sanitized value or a generated identifier.
+
+Error responses include `error_code`, `message`, `status_code`, and
+`request_id`. When agent context is available, errors also include `run_id` and
+`step_id`.
+
+## Investigation flow
+
+Use this default workflow for threat investigations:
+
+1. Normalize raw input with `POST /v2/entity-resolution`.
+2. If the result is ambiguous, constrain `expected_types` or ask for
+   disambiguation.
+3. Retrieve claim-level evidence with `POST /v2/evidence`.
+4. Pivot from canonical entities with `POST /v2/relationships`.
+5. Use `POST /v2/prioritize` for environment-aware triage.
+6. Use the matching assessment endpoint for a deterministic verdict.
+7. Hydrate referenced entities and evidence by ID when you need bounded detail.
+
+## Endpoint groups
+
+<CardGroup cols={2}>
+  <Card title="Health" icon="heart-pulse" href="/api-reference/endpoint/health">
+    Check authenticated service availability.
+  </Card>
+  <Card title="Auth" icon="key" href="/api-reference/endpoint/auth-token">
+    Mint bearer tokens and manage API keys.
+  </Card>
+  <Card title="Resolution" icon="magnifying-glass" href="/api-reference/endpoint/entity-resolution">
+    Normalize raw inputs into canonical Kyberis entities.
+  </Card>
+  <Card title="Intel and evidence" icon="file-search" href="/api-reference/endpoint/intel-search">
+    Search intelligence and retrieve bounded evidence for specific claims.
+  </Card>
+  <Card title="Relationships" icon="code-branch" href="/api-reference/endpoint/relationships">
+    Pivot through bounded relationships for canonical entities.
+  </Card>
+  <Card title="Prioritize" icon="arrow-up-wide-short" href="/api-reference/endpoint/prioritize">
+    Rank signals by environment-aware deterministic relevance.
+  </Card>
+  <Card title="Assessments" icon="shield-check" href="/api-reference/endpoint/threat-assessments">
+    Produce structured CVE, actor, IOC, environment, and threat assessments.
+  </Card>
+</CardGroup>
+
+## OpenAPI
+
+```json
+{
+  "title": "Threat Investigator API v2",
+  "version": "0.1.0"
+}
 ```

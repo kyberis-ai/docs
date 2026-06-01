@@ -1,0 +1,31 @@
+---
+title: 'Resolution responses'
+description: 'Interpret resolved, ambiguous, and not_found entity-resolution results.'
+---
+
+Entity resolution answers what a raw input refers to in Kyberis.
+
+## Status values
+
+| Status | Meaning | Agent action |
+| --- | --- | --- |
+| `resolved` | Kyberis found a canonical entity. | Continue with `canonical_id` and `entity_type`. |
+| `ambiguous` | Multiple candidates are plausible. | Ask for disambiguation or retry with tighter `expected_types`. |
+| `not_found` | No canonical entity matched. | Stop or pivot to a different enrichment path. |
+
+## Key fields
+
+- `canonical_id`
+- `canonical_name`
+- `entity_type`
+- `resolution_confidence`
+- `candidates[]`
+- `match_type`
+- `score`
+- aliases and metadata when requested
+
+## Common mistakes
+
+- Do not guess when status is `ambiguous`.
+- Do not continue to assessment when status is `not_found` unless you intentionally switch to `query` mode.
+- Do not use `ioc` as an expected type. Use `ip`, `domain`, `url`, `hash`, or `email`.

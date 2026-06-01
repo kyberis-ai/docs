@@ -1,0 +1,46 @@
+---
+title: 'Prioritize threats for an environment'
+description: 'Use deterministic ranking to decide which signals deserve attention first.'
+---
+
+Use `/v2/prioritize` when the caller provides environment context and asks what matters now.
+
+## Environment profile
+
+Include the context that changes priority:
+
+```json
+{
+  "environment": {
+    "products": ["Microsoft Exchange", "Okta", "Kubernetes"],
+    "vendors": ["Microsoft", "Okta"],
+    "capabilities": ["federated_identity", "public_api_surface"],
+    "cloud_providers": ["aws"],
+    "hosting_model": "hybrid",
+    "industry": "healthcare",
+    "geography": ["US"],
+    "external_exposure": ["vpn", "owa", "public_api"]
+  }
+}
+```
+
+## Workflow
+
+1. Call `/v2/prioritize` with `environment`, `time_window_days`, and `max_items`.
+2. Review top signals by `priority_score`, `confidence_score`, and `environment_match_reasons`.
+3. Validate the top 1-3 signals with evidence and relationships.
+4. Run the relevant assessment for each material item.
+5. Return an action plan ordered by priority.
+
+## Interpret ranking fields
+
+- `priority`: human-friendly urgency label
+- `priority_score`: deterministic rank score
+- `confidence_score`: confidence in the signal and supporting data
+- `activity_level`: current activity signal
+- `novelty_score`: how new the signal is to the request context
+- `freshness_score`: recency of supporting data
+- `environment_match_reasons`: why this matters to the provided environment
+- `suppression_reasons`: why a signal was lowered or deprioritized
+- `what_changed`: changes since the requester's last view
+- `recommended_action_type`: action category for follow-up

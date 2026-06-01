@@ -1,0 +1,88 @@
+---
+title: 'Install the Kyberis skill'
+description: 'Install Kyberis agent skills with the published npm installer.'
+---
+
+Use `@kyberis-ai/agent-skills` to install Kyberis investigation instructions for your agent. The skill teaches the agent how to choose Kyberis tools, handle ambiguity, interpret responses, and produce evidence-backed recommendations.
+
+Use it together with [Kyberis MCP](/install/mcp): the skill tells the agent how to investigate, and MCP gives the agent tools to call Kyberis.
+
+## What the skill provides
+
+- Investigation workflow: resolve, evidence, relationships, assessment, hydration, final recommendation
+- Trigger classification for CVEs, IOCs, actors, broad topics, and environment triage
+- Endpoint selection rules
+- Response decision gates for ambiguity, access errors, quotas, and weak evidence
+- Output expectations for recommendations, confidence, evidence, caveats, and next actions
+
+## Prerequisites
+
+- Node.js 20 or newer
+- An agent that supports local skills or instruction bundles
+
+## Install
+
+Install the skill for your agent:
+
+```bash
+npx -y @kyberis-ai/agent-skills install codex
+npx -y @kyberis-ai/agent-skills install claude
+npx -y @kyberis-ai/agent-skills install cursor
+npx -y @kyberis-ai/agent-skills install windsurf
+```
+
+For another agent, install the generic bundle into a directory your agent can read:
+
+```bash
+npx -y @kyberis-ai/agent-skills install generic --dir ./kyberis-agent-skill
+```
+
+## Install locations
+
+The installer writes the Kyberis skill into the agent's local skill directory:
+
+| Agent | Install location |
+| --- | --- |
+| Codex | `~/.codex/skills/kyberis` |
+| Claude | `~/.claude/skills/kyberis` |
+| Cursor | `~/.cursor/skills/kyberis` and `~/.cursor/rules/kyberis.mdc` |
+| Windsurf | `~/.codeium/windsurf/skills/kyberis` |
+| Generic | The directory passed with `--dir` |
+
+Use `--dir <path>` to install to a custom directory. Generic installs require `--dir` because unsupported agents do not share a standard skill path.
+
+## Update installed skills
+
+Refresh installed Kyberis skills with:
+
+```bash
+npx -y @kyberis-ai/agent-skills@latest update
+```
+
+`update` refreshes any installed Kyberis skill that has a Kyberis-generated manifest. If local edits are detected, the installer refuses to overwrite unless you pass `--force`.
+
+## Check status
+
+```bash
+npx -y @kyberis-ai/agent-skills status codex
+npx -y @kyberis-ai/agent-skills status claude
+npx -y @kyberis-ai/agent-skills status cursor
+npx -y @kyberis-ai/agent-skills status windsurf
+npx -y @kyberis-ai/agent-skills status generic --dir ./kyberis-agent-skill
+```
+
+## Verify
+
+Restart or reload your agent, then ask:
+
+```text
+Use the Kyberis skill. What workflow should you follow for a CVE-first investigation?
+```
+
+The answer should start with entity resolution, focused evidence retrieval, relationship pivots, and a CVE assessment.
+
+## Use with MCP
+
+<Card title="Install MCP" icon="/icons/mcp.svg" href="/install/mcp">
+  Connect a supported agent client to Kyberis tools with `@kyberis-ai/mcp`.
+</Card>

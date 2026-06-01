@@ -1,0 +1,58 @@
+---
+title: 'Cursor setup'
+description: 'Connect Cursor to Kyberis through MCP.'
+---
+
+## Install the skill
+
+Install the Kyberis skill so Cursor has the investigation workflow and response handling rules.
+
+```bash
+npx -y @kyberis-ai/agent-skills install cursor
+```
+
+## Connect MCP
+
+```bash
+npx -y @kyberis-ai/mcp connect cursor --token kct_abc123
+```
+
+The connector updates `~/.cursor/mcp.json` by default. Use `--dry-run` to print Cursor-compatible MCP JSON without changing local config:
+
+```json
+{
+  "mcpServers": {
+    "kyberis": {
+      "type": "http",
+      "url": "<mcp_url>",
+      "headers": {
+        "Authorization": "Bearer <token>"
+      }
+    }
+  }
+}
+```
+
+Add the JSON to Cursor's MCP configuration.
+
+## Verify
+
+Ask Cursor:
+
+```text
+Use Kyberis to investigate whether this domain has related actors, campaigns, malware, or evidence. Resolve the domain first.
+```
+
+## Working style
+
+Keep Kyberis investigation prompts explicit:
+
+- Ask for resolution before assessment.
+- Ask for focused evidence calls for each claim.
+- Ask the agent to separate facts, inference, caveats, and next actions.
+
+## Troubleshooting
+
+- Use `--json` if you need clean machine-readable setup output.
+- Regenerate the connect token if setup says it was used, revoked, expired, or created for another client.
+- Check that Cursor sends the `Authorization` header with the MCP server request.

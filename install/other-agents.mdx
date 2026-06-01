@@ -1,0 +1,38 @@
+---
+title: 'Generic agent setup'
+description: 'Use Kyberis with any agent that supports HTTP MCP servers.'
+---
+
+Install the generic Kyberis skill bundle into a directory your agent can read:
+
+```bash
+npx -y @kyberis-ai/agent-skills install generic --dir ./kyberis-agent-skill
+```
+
+Then connect MCP with the generic setup flow. Generic mode does not update a client config file automatically:
+
+```bash
+npx -y @kyberis-ai/mcp connect generic --token kct_abc123 --json
+```
+
+Copy the returned values into your client configuration:
+
+- Transport: HTTP
+- Server URL: the returned `mcp_url`
+- Header: `Authorization: Bearer <token>`
+
+## Test prompt
+
+```text
+Use Kyberis to resolve this subject before making any recommendation. If the resolution is ambiguous, return candidates and ask for clarification.
+```
+
+## Direct REST fallback
+
+If your agent cannot use MCP, create an API key in [API keys](https://app.kyberis.ai/api-keys), then call the REST API directly with:
+
+```http
+Authorization: ApiKey <key_id>:<secret>
+```
+
+Use [Authentication](/development) and the [API reference](/api-reference/introduction) for direct integration details.

@@ -1,34 +1,39 @@
-> **Customize this file**: Tailor this template to your project by noting specific contribution types you're looking for, adding a Code of Conduct, or adjusting the writing guidelines to match your style.
+# Contributing
 
-# Contribute to the documentation
+Keep this documentation focused on helping developers and agents use Kyberis safely and effectively.
 
-Thank you for your interest in contributing to our documentation! This guide will help you get started.
+## Local workflow
 
-## How to contribute
+```bash
+mint dev
+mint broken-links
+```
 
-### Option 1: Edit directly on GitHub
+If `mint` is not installed:
 
-1. Navigate to the page you want to edit
-2. Click the "Edit this file" button (the pencil icon)
-3. Make your changes and submit a pull request
+```bash
+npm i -g mint
+```
 
-### Option 2: Local development
+## Writing standards
 
-1. Fork and clone this repository
-2. Install the Mintlify CLI: `npm i -g mint`
-3. Create a branch for your changes
-4. Make changes
-5. Navigate to the docs directory and run `mint dev`
-6. Preview your changes at `http://localhost:3000`
-7. Commit your changes and submit a pull request
+- Use active voice and second person.
+- Keep sentences concise.
+- Use sentence case for headings.
+- Bold UI labels.
+- Use code formatting for commands, paths, field names, scopes, and endpoint paths.
+- Preserve exact API field names from `api-reference/openapi.json`.
 
-For more details on local development, see our [development guide](development.mdx).
+## API docs
 
-## Writing guidelines
+Endpoint pages in `api-reference/endpoint/` should reference operations from `api-reference/openapi.json` with the `openapi` frontmatter key.
 
-- **Use active voice**: "Run the command" not "The command should be run"
-- **Address the reader directly**: Use "you" instead of "the user"
-- **Keep sentences concise**: Aim for one idea per sentence
-- **Lead with the goal**: Start instructions with what the user wants to accomplish
-- **Use consistent terminology**: Don't alternate between synonyms for the same concept
-- **Include examples**: Show, don't just tell
+When the OpenAPI spec changes, verify:
+
+- every operation has a page
+- every page references a real operation
+- `docs.json` navigation includes the relevant pages
+
+## Security
+
+Never commit API keys, bearer tokens, connect tokens, MCP credentials, customer data, or live investigation output containing sensitive indicators unless explicitly approved and sanitized.

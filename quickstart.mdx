@@ -1,81 +1,169 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
-icon: 'rocket'
+title: 'Quickstart'
+description: 'Call Kyberis directly, resolve an entity, retrieve evidence, and run a deterministic assessment.'
 ---
 
-## Get started in three steps
+This quickstart uses direct REST calls. For agent-native access, start with [Set up Kyberis in your agent](/install/overview).
 
-Get your documentation site running locally and make your first customization.
+## Prerequisites
 
-### Step 1: Set up your local environment
+- A Kyberis API key ID and secret
+- `curl`
+- `jq`, optional but useful for reading responses
 
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
-    
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
+Set local shell variables:
 
-### Step 2: Deploy your changes
+```bash
+export KYBERIS_BASE_URL="https://api.kyberis.ai"
+export KYBERIS_API_KEY_ID="<key_id>"
+export KYBERIS_API_KEY_SECRET="<secret>"
+```
 
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
-    
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-  </Accordion>
-  <Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
+## Check health
 
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
+<CodeGroup>
 
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
+```bash cURL
+curl -sS "$KYBERIS_BASE_URL/v2/health" \
+  -H "Authorization: ApiKey $KYBERIS_API_KEY_ID:$KYBERIS_API_KEY_SECRET" \
+  -H "Accept: application/json"
+```
 
-### Step 3: Go live
+```javascript Node.js
+const baseUrl = process.env.KYBERIS_BASE_URL ?? 'https://api.kyberis.ai';
+const keyId = process.env.KYBERIS_API_KEY_ID;
+const secret = process.env.KYBERIS_API_KEY_SECRET;
 
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
+const response = await fetch(`${baseUrl}/v2/health`, {
+  headers: {
+    Authorization: `ApiKey ${keyId}:${secret}`,
+    Accept: 'application/json',
+  },
+});
+
+console.log(await response.json());
+```
+
+```python Python
+import json
+import os
+import urllib.request
+
+base_url = os.environ.get('KYBERIS_BASE_URL', 'https://api.kyberis.ai')
+key_id = os.environ['KYBERIS_API_KEY_ID']
+secret = os.environ['KYBERIS_API_KEY_SECRET']
+
+request = urllib.request.Request(
+    f'{base_url}/v2/health',
+    headers={
+        'Authorization': f'ApiKey {key_id}:{secret}',
+        'Accept': 'application/json',
+    },
+)
+
+with urllib.request.urlopen(request) as response:
+    print(json.load(response))
+```
+
+</CodeGroup>
+
+A successful response confirms your credentials can reach the API.
+
+## Mint a bearer token
+
+You can call most Kyberis investigation endpoints directly with `Authorization: ApiKey <key_id>:<secret>`. That is the simplest path for a first request and for trusted server-side integrations.
+
+For runtime agent sessions, prefer a short-lived bearer token. The API key remains the long-lived machine credential, while the bearer token is scoped by expiry. This reduces the blast radius if runtime logs, traces, or agent configuration expose an authorization header.
+
+```bash
+curl -sS -X POST "$KYBERIS_BASE_URL/v2/auth/token" \
+  -H "Authorization: ApiKey $KYBERIS_API_KEY_ID:$KYBERIS_API_KEY_SECRET" \
+  -H "Accept: application/json"
+```
+
+The response includes `access_token`, `token_type`, `expires_in`, `expires_at`, `scopes`, `audiences`, and `issuer`. Store the API key in your trusted credential store, mint bearers as needed, and refresh them when they expire.
+
+## Resolve an entity
+
+```bash
+curl -sS -X POST "$KYBERIS_BASE_URL/v2/entity-resolution" \
+  -H "Authorization: ApiKey $KYBERIS_API_KEY_ID:$KYBERIS_API_KEY_SECRET" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "agent_context": {
+      "objective": "Normalize a CVE for investigation.",
+      "requested_outcome": "Return the canonical entity identifier.",
+      "workflow_stage": "resolve",
+      "run_id": "run-quickstart-001",
+      "step_id": "step-01"
+    },
+    "query": "CVE-2024-3094",
+    "expected_types": ["cve"],
+    "resolution": {
+      "max_results": 5,
+      "include_aliases": true,
+      "include_metadata": true
+    }
+  }'
+```
+
+Branch on `resolution.status`:
+
+- `resolved`: use `canonical_id` and `entity_type` downstream.
+- `ambiguous`: retry with tighter `expected_types` or ask for disambiguation.
+- `not_found`: stop or use a different enrichment source.
+
+## Retrieve evidence
+
+Use focused evidence calls. Prefer one claim per request.
+
+```bash
+curl -sS -X POST "$KYBERIS_BASE_URL/v2/evidence" \
+  -H "Authorization: ApiKey $KYBERIS_API_KEY_ID:$KYBERIS_API_KEY_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agent_context": {
+      "objective": "Check whether the CVE is exploited in the wild.",
+      "requested_outcome": "Return bounded evidence for active exploitation.",
+      "workflow_stage": "evidence",
+      "run_id": "run-quickstart-001",
+      "step_id": "step-02"
+    },
+    "query": "CVE-2024-3094",
+    "claim_type": "active_exploitation",
+    "max_results": 5
+  }'
+```
+
+## Run an assessment
+
+Use the most specific assessment endpoint available for the subject.
+
+```bash
+curl -sS -X POST "$KYBERIS_BASE_URL/v2/cve-assessments" \
+  -H "Authorization: ApiKey $KYBERIS_API_KEY_ID:$KYBERIS_API_KEY_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agent_context": {
+      "objective": "Decide whether this CVE needs immediate attention.",
+      "requested_outcome": "Return deterministic risk guidance with evidence references.",
+      "workflow_stage": "assessment",
+      "run_id": "run-quickstart-001",
+      "step_id": "step-03"
+    },
+    "query": "CVE-2024-3094",
+    "context": {
+      "targeted_industries": ["technology"],
+      "known_targets": ["XZ Utils 5.6.0", "XZ Utils 5.6.1"],
+      "intel_confidence": "medium"
+    }
+  }'
+```
 
 ## Next steps
 
-Now that you have your docs running, explore these key features:
-
 <CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
+  <Card title="Set up an agent" icon="/icons/mcp.svg" href="/install/overview" />
+  <Card title="Interpret responses" icon="/icons/responses.svg" href="/responses/overview" />
 </CardGroup>
-
-<Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
-</Note>

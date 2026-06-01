@@ -1,0 +1,56 @@
+---
+title: 'Error responses'
+description: 'Branch on Kyberis error codes, access fields, and retry hints.'
+---
+
+Kyberis errors are structured for agent branching.
+
+## Error fields
+
+| Field | Meaning |
+| --- | --- |
+| `error_code` | Stable machine-readable error code |
+| `message` | Human-readable summary |
+| `status_code` | HTTP status code |
+| `request_id` | Request correlation ID |
+| `run_id` | Agent run ID when context is available |
+| `step_id` | Agent step ID when context is available |
+| `required_scopes` | Scopes needed to call the endpoint |
+| `reason` | Additional machine-readable blocker |
+| `retry_after_seconds` | Backoff hint for rate limits |
+| `requested_credits` / `available_credits` | Credit exhaustion details |
+
+## Common statuses
+
+| Status | Typical cause | Agent action |
+| --- | --- | --- |
+| `400` | Missing or malformed `agent_context`, subject/query conflict, bad request shape | Fix the payload. |
+| `401` | Missing, invalid, or expired credentials | Refresh credentials or ask for a valid key. |
+| `403` | Missing scope | Ask for a key with `required_scopes`. |
+| `422` | Schema validation failure | Correct fields, enums, limits, or types. |
+| `429` | Rate limit or repeated auth failures | Back off and honor `retry_after_seconds`. |
+| `5xx` | Transient service failure | Retry conservatively with backoff. |
+
+## Do not retry blindly
+
+Do not retry these without changing something:
+
+- `insufficient_scope`
+- `credit_exhausted`
+- `batch_limit_exceeded`
+- validation errors
+- malformed or expired connect tokens
+
+## Error report shape
+
+When a Kyberis call fails, report:
+
+```text
+Kyberis call failed: <endpoint>
+status: <status_code>
+error_code: <error_code>
+request_id: <request_id>
+run_id: <run_id>
+step_id: <step_id>
+required action: <credential, scope, payload, retry, or support action>
+```

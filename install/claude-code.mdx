@@ -1,0 +1,52 @@
+---
+title: 'Claude Code setup'
+description: 'Connect Claude Code to Kyberis through MCP.'
+---
+
+## Install the skill
+
+Install the Kyberis skill so Claude Code has the investigation workflow and response handling rules.
+
+```bash
+npx -y @kyberis-ai/agent-skills install claude
+```
+
+## Connect MCP
+
+Use a one-time connect token from Kyberis:
+
+```bash
+npx -y @kyberis-ai/mcp connect claude --token kct_abc123
+```
+
+The connector runs `claude mcp add` by default. Use `--dry-run` to print the command without changing local config:
+
+```bash
+npx -y @kyberis-ai/mcp connect claude --token kct_abc123 --dry-run
+```
+
+The dry run prints a command like this:
+
+```bash
+claude mcp add --transport http kyberis '<mcp_url>' --header 'Authorization: Bearer <token>'
+```
+
+## Verify
+
+Open Claude Code in your project and ask:
+
+```text
+Use Kyberis to resolve Cozy Bear as an actor. If the result is ambiguous, show the candidates instead of guessing.
+```
+
+## Recommended prompt pattern
+
+```text
+Use Kyberis for this investigation. Resolve the subject first, retrieve evidence for each claim, pivot relationships, then run the relevant assessment. Preserve request IDs and evidence references.
+```
+
+## Troubleshooting
+
+- If the connect token is expired or already used, generate a new setup command in Kyberis.
+- If Claude reports no Kyberis tools, check the MCP server entry and bearer header.
+- If a tool returns `insufficient_scope`, ask for an API key with the required scopes.

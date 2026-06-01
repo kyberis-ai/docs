@@ -1,33 +1,39 @@
-> **First-time setup**: Customize this file for your project. Prompt the user to customize this file for their project.
-> For Mintlify product knowledge (components, configuration, writing standards),
-> install the Mintlify skill: `npx skills add https://mintlify.com/docs`
-
 # Documentation project instructions
 
 ## About this project
 
-- This is a documentation site built on [Mintlify](https://mintlify.com)
-- Pages are MDX files with YAML frontmatter
-- Configuration lives in `docs.json`
-- Run `mint dev` to preview locally
-- Run `mint broken-links` to check links
+- This is the Mintlify developer portal for Kyberis.
+- Pages are MDX files with YAML frontmatter.
+- Configuration lives in `docs.json`.
+- Run `mint dev` to preview locally.
+- Run `mint broken-links` to check links.
+
+## Product focus
+
+Kyberis provides deterministic, evidence-backed threat intelligence workflows for machine consumers and security teams. Documentation should help readers install Kyberis in agents, authenticate safely, conduct investigations, interpret responses, and use the API reference.
 
 ## Terminology
 
-{/* Add product-specific terms and preferred usage */}
-{/* Example: Use "workspace" not "project", "member" not "user" */}
+- Use "Kyberis" for the product.
+- Use "agent context" for request metadata such as `objective`, `workflow_stage`, `run_id`, and `step_id`.
+- Use "evidence" for bounded support returned by Kyberis.
+- Use "assessment" for deterministic decision support.
+- Use "signal" for a normalized item returned by `/v2/prioritize`.
+- Use "MCP" for Model Context Protocol integrations.
 
 ## Style preferences
 
-{/* Add any project-specific style rules below */}
-
-- Use active voice and second person ("you")
-- Keep sentences concise — one idea per sentence
-- Use sentence case for headings
-- Bold for UI elements: Click **Settings**
-- Code formatting for file names, commands, paths, and code references
+- Use active voice and second person.
+- Keep sentences concise.
+- Use sentence case for headings.
+- Bold UI elements.
+- Use code formatting for file names, commands, paths, endpoint paths, scopes, and response fields.
+- Separate facts from inference in investigation examples.
+- Preserve request IDs, evidence IDs, confidence, and caveats in examples that describe agent output.
 
 ## Content boundaries
 
-{/* Define what should and shouldn't be documented */}
-{/* Example: Don't document internal admin features */}
+- Do not document internal admin workflows unless they are exposed in the public OpenAPI spec.
+- Do not include secrets, live credentials, or unsanitized customer data.
+- Treat `api-reference/openapi.json` as the endpoint contract source of truth.
+- Treat active Kyberis application docs and code as product behavior source of truth when updating guides.

@@ -1,0 +1,39 @@
+---
+title: 'Investigate a CVE'
+description: 'Resolve a CVE, retrieve exploitation evidence, pivot relationships, and run a CVE assessment.'
+---
+
+Use this workflow when the trigger is a CVE identifier or a product vulnerability mention.
+
+## Workflow
+
+1. Resolve the CVE with `/v2/entity-resolution`.
+2. Retrieve `active_exploitation` evidence.
+3. Retrieve `relevance_to_environment` evidence when the caller provides sector, geography, products, or exposure.
+4. Pivot relationships for actors, campaigns, malware, indicators, and techniques.
+5. Run `/v2/cve-assessments`.
+6. Hydrate important evidence IDs before final reporting.
+
+## Evidence claims
+
+Use focused claims instead of one broad question:
+
+- `active_exploitation`
+- `observed_in_the_wild`
+- `sector_targeting`
+- `actor_association`
+- `relevance_to_environment`
+
+## Final answer shape
+
+Return:
+
+- recommendation: patch, validate exposure, hunt, monitor, review controls, or ignore
+- why now: exploitation, targeting, freshness, and environment match
+- confidence: include caveats and unresolved gaps
+- supporting evidence: bounded evidence IDs or report refs
+- next actions: 1-3 concrete actions
+
+## Decision gates
+
+If resolution is `ambiguous`, ask for clarification or retry with `expected_types: ["cve"]`. If evidence is sparse, avoid decisive remediation and recommend low-cost validation.

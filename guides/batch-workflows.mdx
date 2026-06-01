@@ -1,0 +1,23 @@
+---
+title: 'Batch investigation workflows'
+description: 'Use batch endpoints for bounded, per-item threat investigation at scale.'
+---
+
+Batch endpoints help agents process multiple entities or claims while preserving per-item uncertainty.
+
+## Available batch endpoints
+
+| Endpoint | Use |
+| --- | --- |
+| `/v2/entity-resolution/batch` | Resolve multiple inputs |
+| `/v2/evidence/batch` | Retrieve evidence for multiple claims |
+| `/v2/relationships/batch` | Pivot relationships for multiple subjects |
+| `/v2/assessments/batch` | Run multiple deterministic assessments |
+
+## Limits and scopes
+
+API schema caps are `1..50` items per batch. Plans or MCP clients may enforce smaller limits. Batch endpoints require the read scope and the matching `batch:*` scope.
+
+## Reporting guidance
+
+Return item-level status. Do not collapse ambiguous, failed, or low-confidence items into a single success summary.

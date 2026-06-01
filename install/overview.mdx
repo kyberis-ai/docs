@@ -1,0 +1,70 @@
+---
+title: 'Set up Kyberis in your agent'
+description: 'Install the Kyberis skill, connect MCP, and verify your agent can call Kyberis.'
+---
+
+Use both published npm tools for the best agent experience:
+
+- `@kyberis-ai/agent-skills` installs Kyberis investigation instructions for your agent.
+- `@kyberis-ai/mcp` connects your agent to Kyberis tools with a one-time connect token.
+
+## Prerequisites
+
+- Node.js 20 or newer
+- A Kyberis API key or access to the Kyberis dashboard
+- A one-time MCP connect token from [API keys](https://app.kyberis.ai/api-keys)
+
+## 1. Install the skill
+
+Choose your agent:
+
+```bash
+npx -y @kyberis-ai/agent-skills install claude
+npx -y @kyberis-ai/agent-skills install cursor
+npx -y @kyberis-ai/agent-skills install codex
+npx -y @kyberis-ai/agent-skills install windsurf
+```
+
+For another agent, install the generic bundle into a directory your agent can read:
+
+```bash
+npx -y @kyberis-ai/agent-skills install generic --dir ./kyberis-agent-skill
+```
+
+## 2. Create a connect token
+
+Open [API keys](https://app.kyberis.ai/api-keys) in the Kyberis dashboard and generate a one-time MCP connect token for your agent.
+
+Connect tokens begin with `kct_`. They are single-use credentials for setup. Generate a new token if yours expires, is revoked, or has already been used.
+
+## 3. Connect MCP
+
+Use the same agent name when connecting MCP:
+
+```bash
+npx -y @kyberis-ai/mcp connect claude --token kct_abc123
+npx -y @kyberis-ai/mcp connect cursor --token kct_abc123
+npx -y @kyberis-ai/mcp connect codex --token kct_abc123
+npx -y @kyberis-ai/mcp connect windsurf --token kct_abc123
+```
+
+For unsupported agents, use generic mode and copy the returned configuration:
+
+```bash
+npx -y @kyberis-ai/mcp connect generic --token kct_abc123 --json
+```
+
+## 4. Verify
+
+Restart or reload your agent, then ask:
+
+```text
+Use Kyberis to check API health, then resolve CVE-2024-3094 as a CVE. If the result is ambiguous, show candidates instead of guessing.
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Install skills" icon="/icons/skill.svg" href="/install/skills" />
+  <Card title="Connect MCP" icon="/icons/mcp.svg" href="/install/mcp" />
+</CardGroup>

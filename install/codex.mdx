@@ -1,0 +1,38 @@
+---
+title: 'Codex setup'
+description: 'Connect Codex to Kyberis through MCP.'
+---
+
+## Install the skill
+
+Install the Kyberis skill so Codex has the investigation workflow and response handling rules.
+
+```bash
+npx -y @kyberis-ai/agent-skills install codex
+```
+
+## Connect MCP
+
+```bash
+npx -y @kyberis-ai/mcp connect codex --token kct_abc123
+```
+
+The connector updates `~/.codex/config.toml` by default. Use `--dry-run` to print TOML for Codex MCP configuration without changing local config:
+
+```toml
+[mcp_servers.kyberis]
+url = "<mcp_url>"
+headers = { Authorization = "Bearer <token>" }
+```
+
+## Verify
+
+Ask Codex:
+
+```text
+Use Kyberis to resolve CVE-2024-3094, retrieve active exploitation evidence, and run a CVE assessment.
+```
+
+## Recommended behavior
+
+Instruct Codex to preserve `request_id`, `run_id`, `step_id`, evidence IDs, confidence, and caveats in investigation summaries.

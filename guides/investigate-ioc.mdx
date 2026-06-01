@@ -1,0 +1,26 @@
+---
+title: 'Investigate an IOC'
+description: 'Investigate IPs, domains, URLs, hashes, and email indicators with exact-string fidelity.'
+---
+
+Use this workflow for observables from SIEM, EDR, firewall, email, or alerting systems.
+
+## Workflow
+
+1. Resolve the observable with concrete expected types: `ip`, `domain`, `url`, `hash`, or `email`.
+2. Retrieve evidence for `observed_in_the_wild`, `malware_association`, `campaign_association`, or `actor_association`.
+3. Pivot relationships to actors, campaigns, malware, sectors, and related indicators.
+4. Run `/v2/ioc-assessments`.
+5. Retry in exact `query` mode when canonicalization may lose URL or observable detail.
+
+## Important rule
+
+Do not use `ioc` in `expected_types`. Expand IOC intent into concrete types.
+
+```json
+"expected_types": ["ip", "domain", "url", "hash", "email"]
+```
+
+## Final answer shape
+
+Lead with disposition and confidence. Then include related entities, evidence IDs, caveats, and recommended next actions such as block, hunt, monitor, or ignore.
