@@ -1,9 +1,11 @@
 ---
 title: 'Install the Kyberis skill'
-description: 'Give coding agents Kyberis investigation playbooks, endpoint selection rules, and response handling guidance.'
+description: 'Install Kyberis agent skills with the published npm installer.'
 ---
 
-A Kyberis skill teaches an agent how to conduct evidence-backed threat investigations. It does not replace authentication or MCP access. Use it with MCP whenever possible.
+Use `@kyberis-ai/agent-skills` to install Kyberis investigation instructions for your agent. The skill teaches the agent how to choose Kyberis tools, handle ambiguity, interpret responses, and produce evidence-backed recommendations.
+
+Use it together with [Kyberis MCP](/install/mcp): the skill tells the agent how to investigate, and MCP gives the agent tools to call Kyberis.
 
 ## What the skill provides
 
@@ -13,21 +15,65 @@ A Kyberis skill teaches an agent how to conduct evidence-backed threat investiga
 - Response decision gates for ambiguity, access errors, quotas, and weak evidence
 - Output expectations for recommendations, confidence, evidence, caveats, and next actions
 
+## Prerequisites
+
+- Node.js 20 or newer
+- An agent that supports local skills or instruction bundles
+
 ## Install
 
-The public one-command setup path for Kyberis agents is MCP, not a skill install command. Use [Install the Kyberis MCP server](/install/mcp) when you want Claude, Cursor, Codex, or another MCP-capable agent to call Kyberis.
+Install the skill for your agent:
 
-Kyberis skills are currently distributed as agent-specific instruction bundles, such as a Codex skill directory. Install the skill only from a Kyberis-provided bundle or private repository that your organization controls.
+```bash
+npx -y @kyberis-ai/agent-skills install codex
+npx -y @kyberis-ai/agent-skills install claude
+npx -y @kyberis-ai/agent-skills install cursor
+npx -y @kyberis-ai/agent-skills install windsurf
+```
 
-For Codex-style local skill installs, the bundle should contain a `SKILL.md` file and any supporting references or scripts. Place it in your agent's configured skills directory, then restart or reload the agent so it can discover the skill.
+For another agent, install the generic bundle into a directory your agent can read:
 
-<Warning>
-  Do not run a placeholder command such as `npx skills add <kyberis-skill-url>` unless Kyberis has provided an actual trusted skill URL for your organization.
-</Warning>
+```bash
+npx -y @kyberis-ai/agent-skills install generic --dir ./kyberis-agent-skill
+```
+
+## Install locations
+
+The installer writes the Kyberis skill into the agent's local skill directory:
+
+| Agent | Install location |
+| --- | --- |
+| Codex | `~/.codex/skills/kyberis` |
+| Claude | `~/.claude/skills/kyberis` |
+| Cursor | `~/.cursor/skills/kyberis` and `~/.cursor/rules/kyberis.mdc` |
+| Windsurf | `~/.codeium/windsurf/skills/kyberis` |
+| Generic | The directory passed with `--dir` |
+
+Use `--dir <path>` to install to a custom directory. Generic installs require `--dir` because unsupported agents do not share a standard skill path.
+
+## Update installed skills
+
+Refresh installed Kyberis skills with:
+
+```bash
+npx -y @kyberis-ai/agent-skills@latest update
+```
+
+`update` refreshes any installed Kyberis skill that has a Kyberis-generated manifest. If local edits are detected, the installer refuses to overwrite unless you pass `--force`.
+
+## Check status
+
+```bash
+npx -y @kyberis-ai/agent-skills status codex
+npx -y @kyberis-ai/agent-skills status claude
+npx -y @kyberis-ai/agent-skills status cursor
+npx -y @kyberis-ai/agent-skills status windsurf
+npx -y @kyberis-ai/agent-skills status generic --dir ./kyberis-agent-skill
+```
 
 ## Verify
 
-Ask your agent:
+Restart or reload your agent, then ask:
 
 ```text
 Use the Kyberis skill. What workflow should you follow for a CVE-first investigation?
@@ -37,8 +83,6 @@ The answer should start with entity resolution, focused evidence retrieval, rela
 
 ## Use with MCP
 
-The skill tells the agent how to investigate. MCP gives the agent tools to call Kyberis. Install both for the best experience.
-
-<Card title="Install MCP" icon="plug" href="/install/mcp">
-  Connect a supported agent client to Kyberis tools.
+<Card title="Install MCP" icon="/icons/mcp.svg" href="/install/mcp">
+  Connect a supported agent client to Kyberis tools with `@kyberis-ai/mcp`.
 </Card>

@@ -1,9 +1,11 @@
 ---
 title: 'Install the Kyberis MCP server'
-description: 'Connect agent clients to Kyberis with a one-time connect token.'
+description: 'Connect agent clients to Kyberis with the published MCP connector.'
 ---
 
-Kyberis MCP lets supported agents call Kyberis tools without hand-writing REST requests. The setup flow uses a one-time connect token and returns a short-lived bearer credential for the MCP connection.
+Use `@kyberis-ai/mcp` to connect MCP-capable agents to Kyberis tools. The setup flow uses a one-time connect token and returns a short-lived bearer credential for the MCP connection.
+
+Install the [Kyberis skill](/install/skills) as well when your agent supports skills. The skill teaches the investigation workflow; MCP provides the callable tools.
 
 ## Prerequisites
 

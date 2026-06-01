@@ -5,7 +5,15 @@ description: 'Connect Windsurf or another generic MCP client to Kyberis.'
 
 The Kyberis MCP CLI currently emits first-class configurations for `claude`, `codex`, `cursor`, and `generic`. Use the generic output for Windsurf if your Windsurf MCP configuration accepts HTTP MCP servers.
 
-## Install
+## Install the skill
+
+Install the Kyberis skill so Windsurf has the investigation workflow and response handling rules.
+
+```bash
+npx -y @kyberis-ai/agent-skills install windsurf
+```
+
+## Connect MCP
 
 ```bash
 npx -y @kyberis-ai/mcp connect generic --token kct_abc123 --json

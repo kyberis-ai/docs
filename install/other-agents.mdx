@@ -3,7 +3,13 @@ title: 'Generic agent setup'
 description: 'Use Kyberis with any agent that supports HTTP MCP servers.'
 ---
 
-Use the generic setup flow when your client supports HTTP MCP servers but is not one of the named clients.
+Install the generic Kyberis skill bundle into a directory your agent can read:
+
+```bash
+npx -y @kyberis-ai/agent-skills install generic --dir ./kyberis-agent-skill
+```
+
+Then connect MCP with the generic setup flow:
 
 ```bash
 npx -y @kyberis-ai/mcp connect generic --token kct_abc123 --json

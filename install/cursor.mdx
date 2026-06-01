@@ -3,7 +3,15 @@ title: 'Cursor setup'
 description: 'Connect Cursor to Kyberis through MCP.'
 ---
 
-## Install
+## Install the skill
+
+Install the Kyberis skill so Cursor has the investigation workflow and response handling rules.
+
+```bash
+npx -y @kyberis-ai/agent-skills install cursor
+```
+
+## Connect MCP
 
 ```bash
 npx -y @kyberis-ai/mcp connect cursor --token kct_abc123
