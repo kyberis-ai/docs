@@ -1,0 +1,127 @@
+---
+title: 'Sample IOC assessment'
+description: 'Investigate a domain or other observable with exact-string fidelity, evidence, relationships, and an IOC assessment.'
+---
+
+Use this sample when an alert contains a domain, URL, IP, hash, or email indicator. IOC investigations should preserve the original observable and use concrete expected types. Do not send `ioc` as an expected type.
+
+## Scenario
+
+An analyst asks:
+
+```text
+We saw login attempts from suspicious-domain.example. Is it known malicious, and should we block it?
+```
+
+## MCP session
+
+A good agent prompt is explicit about the workflow and exact-string handling.
+
+```text
+Use Kyberis to investigate suspicious-domain.example as a domain. Resolve it first, retrieve observed-in-the-wild and malware-association evidence, pivot relationships, then run an IOC assessment. Preserve request IDs, evidence IDs, confidence, and caveats.
+```
+
+Representative MCP tool sequence:
+
+```text
+1. entity_resolution({
+     query: "suspicious-domain.example",
+     expected_types: ["domain"],
+     resolution: { max_results: 5, include_metadata: true },
+     agent_context: { workflow_stage: "resolve", run_id: "run-ioc-domain-sample", step_id: "resolve-domain" }
+   })
+
+2. evidence({
+     query: "suspicious-domain.example",
+     claim_type: "observed_in_the_wild",
+     max_results: 5,
+     agent_context: { workflow_stage: "evidence", run_id: "run-ioc-domain-sample", step_id: "evidence-observed" }
+   })
+
+3. relationships({
+     subject: { entity_type: "domain", canonical_name: "suspicious-domain.example" },
+     relationship_types: ["actor", "campaign", "malware", "indicator"],
+     max_results: 10,
+     agent_context: { workflow_stage: "relationships", run_id: "run-ioc-domain-sample", step_id: "relationships-domain" }
+   })
+
+4. ioc_assessment({
+     query: "suspicious-domain.example",
+     agent_context: { workflow_stage: "assessment", run_id: "run-ioc-domain-sample", step_id: "assessment-domain" }
+   })
+```
+
+Representative response excerpts:
+
+```json
+{
+  "resolution": { "status": "resolved", "confidence": "medium" },
+  "entity_type": "domain",
+  "canonical_name": "suspicious-domain.example",
+  "request_id": "req_sample_ioc_resolve"
+}
+```
+
+```json
+{
+  "claim_type": "observed_in_the_wild",
+  "items": [
+    {
+      "evidence_id": "report--sample-domain-observed",
+      "confidence": "medium",
+      "summary": "The domain appears in reporting about credential phishing infrastructure."
+    }
+  ],
+  "request_id": "req_sample_ioc_evidence"
+}
+```
+
+```json
+{
+  "recommendation": "block",
+  "confidence_score": 0.78,
+  "disposition": "suspicious",
+  "evidence_refs": ["report--sample-domain-observed"],
+  "caveats": ["Confirm whether traffic was user-initiated or automated before broad containment."]
+}
+```
+
+## REST fallback
+
+If MCP is not available, call the same workflow directly.
+
+```bash
+curl -sS -X POST "$KYBERIS_BASE_URL/v2/ioc-assessments" \
+  -H "Authorization: ApiKey $KYBERIS_API_KEY_ID:$KYBERIS_API_KEY_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agent_context": {
+      "objective": "Assess suspicious-domain.example with exact IOC fidelity.",
+      "requested_outcome": "Return deterministic IOC risk guidance.",
+      "workflow_stage": "assessment",
+      "run_id": "run-ioc-domain-sample",
+      "step_id": "assessment-domain"
+    },
+    "query": "suspicious-domain.example"
+  }' | jq .
+```
+
+## Final answer example
+
+```text
+Recommendation: Block suspicious-domain.example at DNS and proxy controls, then hunt for recent access attempts.
+
+Why now: Kyberis found medium-confidence evidence that the domain appears in reporting about phishing infrastructure. The IOC assessment returned a suspicious disposition with a block recommendation.
+
+Confidence: Medium. The domain match is exact, but the sample evidence does not prove compromise in your environment.
+
+Supporting evidence: report--sample-domain-observed. Request IDs: req_sample_ioc_resolve, req_sample_ioc_evidence.
+
+Next actions: block the domain, search authentication and proxy logs for the last 30 days, and review any successful logins from affected users.
+```
+
+## Decision gates
+
+- Preserve the original IOC string in the final answer.
+- Use exact `query` mode for URLs and observables when canonicalization could lose detail.
+- If subject-mode results are unexpectedly weak, retry once with exact `query` mode before finalizing.

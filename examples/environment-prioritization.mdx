@@ -1,0 +1,118 @@
+---
+title: 'Sample environment prioritization'
+description: 'Use environment context to rank current threats, validate top signals, and produce an action plan.'
+---
+
+Use this sample when a user asks what deserves attention first for a specific environment. Start with `/v2/prioritize`, then investigate the top signals instead of deep-diving every result.
+
+## Scenario
+
+A customer asks:
+
+```text
+What should a US healthcare company running Microsoft Exchange, Okta, Kubernetes, and public APIs care about this week?
+```
+
+## REST flow
+
+### 1. Rank signals
+
+```bash
+curl -sS -X POST "$KYBERIS_BASE_URL/v2/prioritize" \
+  -H "Authorization: ApiKey $KYBERIS_API_KEY_ID:$KYBERIS_API_KEY_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agent_context": {
+      "objective": "Prioritize current threats for a healthcare environment.",
+      "requested_outcome": "Ranked signals with environment match reasons.",
+      "workflow_stage": "assessment",
+      "run_id": "run-prioritize-healthcare-sample",
+      "step_id": "prioritize"
+    },
+    "environment": {
+      "products": ["Microsoft Exchange", "Okta", "Kubernetes"],
+      "vendors": ["Microsoft", "Okta"],
+      "capabilities": ["federated_identity", "public_api_surface"],
+      "cloud_providers": ["aws"],
+      "hosting_model": "hybrid",
+      "industry": "healthcare",
+      "geography": ["US"],
+      "external_exposure": ["vpn", "owa", "public_api"]
+    },
+    "time_window_days": 14,
+    "max_items": 10
+  }' | jq .
+```
+
+Representative response excerpt:
+
+```json
+{
+  "request_id": "req_sample_prioritize",
+  "signals": [
+    {
+      "signal_id": "signal--sample-exchange-cve",
+      "title": "Exchange exploitation activity relevant to OWA exposure",
+      "priority": "high",
+      "priority_score": 88,
+      "confidence_score": 0.81,
+      "environment_match_reasons": ["Microsoft Exchange", "owa", "healthcare"],
+      "recommended_action_type": "validate_exposure",
+      "supporting_evidence": ["report--sample-exchange-activity"]
+    },
+    {
+      "signal_id": "signal--sample-identity-phishing",
+      "title": "Identity phishing activity relevant to federated identity",
+      "priority": "medium",
+      "priority_score": 71,
+      "confidence_score": 0.76,
+      "environment_match_reasons": ["Okta", "federated_identity"]
+    }
+  ]
+}
+```
+
+### 2. Validate a top signal
+
+Use the signal's subject, title, or evidence references to run focused evidence and relationships calls. For a CVE-like signal, use a CVE assessment. For an actor or IOC-like signal, use the matching assessment endpoint.
+
+```bash
+curl -sS -X POST "$KYBERIS_BASE_URL/v2/evidence" \
+  -H "Authorization: ApiKey $KYBERIS_API_KEY_ID:$KYBERIS_API_KEY_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agent_context": {
+      "objective": "Validate the top Exchange-related prioritized signal.",
+      "requested_outcome": "Evidence supporting activity and environment relevance.",
+      "workflow_stage": "evidence",
+      "run_id": "run-prioritize-healthcare-sample",
+      "step_id": "evidence-top-signal"
+    },
+    "query": "Exchange exploitation activity relevant to OWA exposure",
+    "claim_type": "relevance_to_environment",
+    "max_results": 5
+  }' | jq .
+```
+
+## Final answer example
+
+```text
+Top action: Validate Exchange/OWA exposure first.
+
+Why now: Kyberis ranked the Exchange-related signal highest because it matched Microsoft Exchange, OWA exposure, US healthcare context, and recent supporting evidence.
+
+Confidence: High for prioritization fit, medium-high for immediate action until exposure is confirmed.
+
+Supporting evidence: report--sample-exchange-activity. Request ID: req_sample_prioritize.
+
+Action plan:
+1. Confirm whether public OWA is exposed and whether affected versions are present.
+2. Review recent authentication, proxy, and endpoint telemetry for Exchange exploitation indicators.
+3. Then evaluate identity phishing activity tied to federated identity and Okta.
+```
+
+## Decision gates
+
+- Do not turn the entire signal list into equal-priority work.
+- Validate the top one to three signals with evidence or relationships before recommending disruptive action.
+- Use `suppression_reasons` and caveats when a signal is lowered or confidence is partial.

@@ -1,0 +1,169 @@
+---
+title: 'REST script examples'
+description: 'Runnable REST-oriented examples for common Kyberis PLG investigation workflows.'
+---
+
+These examples use direct REST calls. For agent-native workflows, use [MCP setup](/install/mcp) and the [sample MCP sessions](/examples/mcp-session-examples).
+
+## Prerequisites
+
+```bash
+export KYBERIS_BASE_URL="https://api.kyberis.ai"
+export KYBERIS_API_KEY_ID="<key_id>"
+export KYBERIS_API_KEY_SECRET="<secret>"
+```
+
+Do not paste live keys into shared notebooks, shell history, support tickets, or screenshots.
+
+## Shared helper
+
+Use this shell helper in local examples to avoid repeating headers.
+
+```bash
+kyberis_post() {
+  local path="$1"
+  local payload="$2"
+  curl -sS -X POST "$KYBERIS_BASE_URL$path" \
+    -H "Authorization: ApiKey $KYBERIS_API_KEY_ID:$KYBERIS_API_KEY_SECRET" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -d "$payload"
+}
+```
+
+## Resolve an actor
+
+```bash
+kyberis_post "/v2/entity-resolution" '{
+  "agent_context": {
+    "objective": "Resolve actor alias for sample workflow.",
+    "requested_outcome": "Canonical actor entity.",
+    "workflow_stage": "resolve",
+    "run_id": "run-rest-actor-sample",
+    "step_id": "resolve-actor"
+  },
+  "query": "APT29",
+  "expected_types": ["actor"],
+  "resolution": {
+    "max_results": 5,
+    "include_aliases": true,
+    "include_metadata": true
+  }
+}' | jq .
+```
+
+## Assess an IOC
+
+```bash
+kyberis_post "/v2/ioc-assessments" '{
+  "agent_context": {
+    "objective": "Assess an exact domain IOC.",
+    "requested_outcome": "Deterministic IOC risk guidance.",
+    "workflow_stage": "assessment",
+    "run_id": "run-rest-ioc-sample",
+    "step_id": "assessment-ioc"
+  },
+  "query": "suspicious-domain.example"
+}' | jq .
+```
+
+## Prioritize an environment
+
+```bash
+kyberis_post "/v2/prioritize" '{
+  "agent_context": {
+    "objective": "Prioritize threats for a sample healthcare environment.",
+    "requested_outcome": "Ranked signal list with reasons.",
+    "workflow_stage": "assessment",
+    "run_id": "run-rest-prioritize-sample",
+    "step_id": "prioritize"
+  },
+  "environment": {
+    "products": ["Microsoft Exchange", "Okta", "Kubernetes"],
+    "vendors": ["Microsoft", "Okta"],
+    "capabilities": ["federated_identity", "public_api_surface"],
+    "industry": "healthcare",
+    "geography": ["US"],
+    "external_exposure": ["owa", "public_api"]
+  },
+  "time_window_days": 14,
+  "max_items": 10
+}' | jq .
+```
+
+## Batch entity resolution
+
+Use batch endpoints for independent items. Keep failed items separate from successful items in the final output.
+
+```bash
+kyberis_post "/v2/entity-resolution/batch" '{
+  "agent_context": {
+    "objective": "Resolve a small set of sample investigation triggers.",
+    "requested_outcome": "Per-item canonical entities or ambiguity states.",
+    "workflow_stage": "batch",
+    "run_id": "run-rest-batch-sample",
+    "step_id": "batch-resolution"
+  },
+  "items": [
+    { "query": "CVE-2024-3094", "expected_types": ["cve"] },
+    { "query": "APT29", "expected_types": ["actor"] },
+    { "query": "suspicious-domain.example", "expected_types": ["domain"] }
+  ],
+  "stop_on_error": false
+}' | jq .
+```
+
+## Python notebook-style flow
+
+```python
+import json
+import os
+import urllib.request
+
+BASE_URL = os.environ.get("KYBERIS_BASE_URL", "https://api.kyberis.ai")
+KEY_ID = os.environ["KYBERIS_API_KEY_ID"]
+SECRET = os.environ["KYBERIS_API_KEY_SECRET"]
+
+
+def kyberis_post(path, payload):
+    request = urllib.request.Request(
+        f"{BASE_URL}{path}",
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Authorization": f"ApiKey {KEY_ID}:{SECRET}",
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        },
+        method="POST",
+    )
+    with urllib.request.urlopen(request, timeout=20) as response:
+        return json.load(response)
+
+run_id = "run-python-cve-sample"
+resolution = kyberis_post("/v2/entity-resolution", {
+    "agent_context": {
+        "objective": "Resolve CVE for Python sample workflow.",
+        "requested_outcome": "Canonical CVE entity.",
+        "workflow_stage": "resolve",
+        "run_id": run_id,
+        "step_id": "resolve-cve",
+    },
+    "query": "CVE-2024-3094",
+    "expected_types": ["cve"],
+    "resolution": {"max_results": 5, "include_metadata": True},
+})
+
+print(json.dumps({
+    "request_id": resolution.get("request_id"),
+    "status": resolution.get("resolution", {}).get("status"),
+    "canonical_id": resolution.get("canonical_id"),
+}, indent=2))
+```
+
+## Production notes
+
+- Store API keys in a credential manager.
+- Preserve `request_id`, `run_id`, and `step_id` in logs.
+- Use bearer tokens for runtime agents when possible.
+- Bound batch sizes and result counts.
+- Retry `429` and transient `5xx` conservatively; do not retry validation or auth failures blindly.
