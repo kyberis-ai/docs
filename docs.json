@@ -41,8 +41,9 @@
               "guides/investigate-cve",
               "guides/investigate-ioc",
               "guides/investigate-actor",
-              "guides/prioritize-environment",
               "guides/pivot-relationships",
+              "guides/hunt-pivots",
+              "guides/prioritize-environment",
               "guides/batch-workflows"
             ]
           },
