@@ -1,0 +1,54 @@
+---
+title: 'Hunt pivot responses'
+description: 'Interpret ranked hunt pivot recommendations for subject-led and observation-led investigations.'
+---
+
+`/v2/hunt-pivots` returns ranked investigative actions for threat-hunting agents.
+Use it when an agent needs to decide what to investigate next, why it matters,
+and what telemetry fields to collect.
+
+Use `/v2/relationships` instead when you only need related actors, campaigns,
+malware, sectors, indicators, or techniques for a resolved subject.
+
+## Modes
+
+| Mode | Use when |
+| --- | --- |
+| `subject_led` | You have a resolved Kyberis subject such as an actor, CVE, malware family, campaign, technique, or IOC. |
+| `observation_led` | You have weak telemetry, unresolved observables, or an anomaly that does not resolve to a canonical Kyberis subject. |
+
+Observation-led requests should still return non-empty pivots when entity
+resolution is unavailable or the observable is unresolved.
+
+## Recommended pivots
+
+Each item in `recommended_pivots` is an action for the customer agent to execute
+against local SIEM, EDR, cloud, identity, or asset telemetry.
+
+| Field | Meaning |
+| --- | --- |
+| `pivot_type` | Hunt category such as `network_pivot`, `process_pivot`, `technique_hunt`, `ioc_expansion`, or `asset_exposure_check`. |
+| `priority` | Relative urgency for this pivot. |
+| `question` | Investigation question the pivot should answer. |
+| `query_intent` | Vendor-neutral search intent for the customer telemetry system. |
+| `why` | Rationale for the pivot. |
+| `confidence` | Confidence in the pivot recommendation, not proof of compromise. |
+| `required_fields` | Telemetry fields the customer agent should collect. |
+| `related_entities` | Optional Kyberis relationship context used to support the recommendation. |
+| `evidence_refs` | Optional evidence references that support the recommendation. |
+| `caveats` | Limits or assumptions for the specific pivot. |
+
+## Attack chains
+
+`likely_attack_chains` contains ATT&CK-aligned hypotheses. Treat these as
+hypotheses until customer-local telemetry confirms them.
+
+## Next decision
+
+`next_decision` summarizes whether the agent should continue hunting, collect
+more context, escalate, or suppress. Preserve the recommendation and reason in
+agent output so analysts can see why the workflow continued.
+
+## Credits and scope
+
+`/v2/hunt-pivots` requires `read:hunt_pivots` and consumes 8 credits per request.

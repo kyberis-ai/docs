@@ -3,7 +3,7 @@ title: 'Kyberis developer portal'
 description: 'Install Kyberis in your agent and use deterministic threat intelligence APIs for evidence-backed investigations.'
 ---
 
-Kyberis helps agents and security teams decide what matters now. Use it to resolve threat entities, retrieve bounded evidence, pivot through relationships, prioritize signals for an environment, and produce deterministic assessments.
+Kyberis helps agents and security teams decide what matters now. Use it to resolve threat entities, retrieve bounded evidence, pivot through relationships, recommend hunt pivots, prioritize signals for an environment, and produce deterministic assessments.
 
 <CardGroup cols={2}>
   <Card title="Get started" icon="/icons/get-started.svg" href="/quickstart">
@@ -29,9 +29,10 @@ Kyberis APIs return structured JSON for machine consumers. Serving-path assessme
 1. Resolve raw input with `/v2/entity-resolution` unless the request is broad discovery.
 2. Retrieve claim-level evidence with `/v2/evidence`.
 3. Pivot with `/v2/relationships` when you need related actors, campaigns, malware, sectors, or indicators.
-4. Rank environment-relevant signals with `/v2/prioritize`.
-5. Run the specific assessment endpoint for the subject type.
-6. Preserve `request_id`, `run_id`, `step_id`, confidence, caveats, and evidence references in your final answer.
+4. Ask `/v2/hunt-pivots` what to investigate next when the agent needs ranked hunt actions.
+5. Rank environment-relevant signals with `/v2/prioritize`.
+6. Run the specific assessment endpoint for the subject type.
+7. Preserve `request_id`, `run_id`, `step_id`, confidence, caveats, and evidence references in your final answer.
 
 ## Build paths
 

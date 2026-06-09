@@ -678,6 +678,7 @@
               "evidence",
               "relationships",
               "assessment",
+              "hunt",
               "hydrate",
               "batch",
               "finalize",
@@ -2255,6 +2256,216 @@
         "title": "HealthResponse",
         "type": "object"
       },
+      "HuntAttackChain": {
+        "properties": {
+          "chain_id": {
+            "title": "Chain Id",
+            "type": "string"
+          },
+          "confidence": {
+            "title": "Confidence",
+            "type": "number"
+          },
+          "evidence_refs": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "steps": {
+            "items": {
+              "$ref": "#/components/schemas/HuntAttackChainStep"
+            },
+            "title": "Steps",
+            "type": "array"
+          }
+        },
+        "required": [
+          "chain_id",
+          "confidence",
+          "steps"
+        ],
+        "title": "HuntAttackChain",
+        "type": "object"
+      },
+      "HuntAttackChainStep": {
+        "properties": {
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "tactic": {
+            "title": "Tactic",
+            "type": "string"
+          },
+          "technique": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Technique"
+          }
+        },
+        "required": [
+          "tactic",
+          "reason"
+        ],
+        "title": "HuntAttackChainStep",
+        "type": "object"
+      },
+      "HuntPivotOptions": {
+        "additionalProperties": false,
+        "properties": {
+          "include_attack_chains": {
+            "default": true,
+            "title": "Include Attack Chains",
+            "type": "boolean"
+          },
+          "max_pivots": {
+            "default": 10,
+            "maximum": 20.0,
+            "minimum": 1.0,
+            "title": "Max Pivots",
+            "type": "integer"
+          }
+        },
+        "title": "HuntPivotOptions",
+        "type": "object"
+      },
+      "HuntPivotRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "agent_context": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AgentContext"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "environment_context": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Environment Context"
+          },
+          "observed": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observed"
+          },
+          "options": {
+            "$ref": "#/components/schemas/HuntPivotOptions"
+          },
+          "subject": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AssessmentSubject"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "title": "HuntPivotRequest",
+        "type": "object"
+      },
+      "HuntPivotResponse": {
+        "properties": {
+          "caveats": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Caveats",
+            "type": "array"
+          },
+          "likely_attack_chains": {
+            "items": {
+              "$ref": "#/components/schemas/HuntAttackChain"
+            },
+            "title": "Likely Attack Chains",
+            "type": "array"
+          },
+          "metadata": {
+            "additionalProperties": true,
+            "title": "Metadata",
+            "type": "object"
+          },
+          "mode": {
+            "enum": [
+              "subject_led",
+              "observation_led"
+            ],
+            "title": "Mode",
+            "type": "string"
+          },
+          "next_decision": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Next Decision",
+            "type": "object"
+          },
+          "recommended_pivots": {
+            "items": {
+              "$ref": "#/components/schemas/RecommendedHuntPivot"
+            },
+            "title": "Recommended Pivots",
+            "type": "array"
+          },
+          "resolution_status": {
+            "enum": [
+              "resolved",
+              "unresolved",
+              "not_applicable"
+            ],
+            "title": "Resolution Status",
+            "type": "string"
+          },
+          "subject": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AssessmentSubject"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "mode",
+          "resolution_status",
+          "likely_attack_chains",
+          "recommended_pivots",
+          "next_decision",
+          "caveats",
+          "metadata"
+        ],
+        "title": "HuntPivotResponse",
+        "type": "object"
+      },
       "IntelSearchEntityRef": {
         "additionalProperties": false,
         "properties": {
@@ -3170,6 +3381,102 @@
           "meta"
         ],
         "title": "PrioritizeResponse",
+        "type": "object"
+      },
+      "RecommendedHuntPivot": {
+        "properties": {
+          "caveats": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Caveats",
+            "type": "array"
+          },
+          "confidence": {
+            "title": "Confidence",
+            "type": "number"
+          },
+          "evidence_refs": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "pivot_type": {
+            "enum": [
+              "telemetry_search",
+              "ioc_expansion",
+              "technique_hunt",
+              "asset_exposure_check",
+              "identity_pivot",
+              "network_pivot",
+              "process_pivot",
+              "case_escalation",
+              "suppression_check"
+            ],
+            "title": "Pivot Type",
+            "type": "string"
+          },
+          "priority": {
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ],
+            "title": "Priority",
+            "type": "string"
+          },
+          "query_intent": {
+            "title": "Query Intent",
+            "type": "string"
+          },
+          "question": {
+            "title": "Question",
+            "type": "string"
+          },
+          "related_entities": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Related Entities",
+            "type": "array"
+          },
+          "required_fields": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Required Fields",
+            "type": "array"
+          },
+          "time_window": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time Window"
+          },
+          "why": {
+            "title": "Why",
+            "type": "string"
+          }
+        },
+        "required": [
+          "pivot_type",
+          "priority",
+          "question",
+          "query_intent",
+          "why",
+          "confidence",
+          "required_fields"
+        ],
+        "title": "RecommendedHuntPivot",
         "type": "object"
       },
       "RelationshipBatchRequest": {
@@ -4457,6 +4764,52 @@
         ]
       }
     },
+    "/v2/hunt-pivots": {
+      "post": {
+        "operationId": "hunt_pivots_v2_hunt_pivots_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HuntPivotRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HuntPivotResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Ranked hunt pivot recommendations",
+        "tags": [
+          "Hunt Pivots"
+        ]
+      }
+    },
     "/v2/intel-search": {
       "post": {
         "operationId": "intel_search_v2_intel_search_post",
@@ -4733,10 +5086,5 @@
         ]
       }
     }
-  },
-  "servers": [
-    {
-      "url": "https://api.kyberis.ai"
-    }
-  ]
+  }
 }
