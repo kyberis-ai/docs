@@ -1,0 +1,172 @@
+---
+title: 'Sample actor lookup'
+description: 'Resolve an actor alias, pivot relationships, retrieve observed activity evidence, and produce an actor assessment.'
+---
+
+Use this sample when a user asks about a named threat actor, alias, or intrusion set. Actor names are often overloaded, so handle ambiguous resolution before pivoting.
+
+## Scenario
+
+A sales engineer asks for a demo investigation:
+
+> Show how Kyberis investigates APT29 and returns evidence-backed recommendations.
+
+## REST flow
+
+### 1. Resolve the actor alias
+
+```bash
+curl -sS -X POST "$KYBERIS_BASE_URL/v2/entity-resolution" \
+  -H "Authorization: ApiKey $KYBERIS_API_KEY_ID:$KYBERIS_API_KEY_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agent_context": {
+      "objective": "Resolve APT29 as a threat actor for a sample investigation.",
+      "requested_outcome": "Canonical actor entity and candidate details if ambiguous.",
+      "workflow_stage": "resolve",
+      "run_id": "run-actor-apt29-sample",
+      "step_id": "resolve-actor"
+    },
+    "query": "APT29",
+    "expected_types": ["actor"],
+    "resolution": {
+      "max_results": 5,
+      "include_aliases": true,
+      "include_metadata": true
+    }
+  }' | jq .
+```
+
+Representative response excerpt:
+
+```json
+{
+  "request_id": "req_sample_actor_resolve",
+  "resolution": { "status": "resolved", "confidence": "high" },
+  "entity_type": "actor",
+  "canonical_id": "actor--sample-apt29",
+  "canonical_name": "APT29",
+  "aliases": ["Cozy Bear", "The Dukes"]
+}
+```
+
+### 2. Pivot to related entities
+
+```bash
+curl -sS -X POST "$KYBERIS_BASE_URL/v2/relationships" \
+  -H "Authorization: ApiKey $KYBERIS_API_KEY_ID:$KYBERIS_API_KEY_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agent_context": {
+      "objective": "Find entities related to APT29.",
+      "requested_outcome": "Campaign, malware, sector, IOC, and technique pivots.",
+      "workflow_stage": "relationships",
+      "run_id": "run-actor-apt29-sample",
+      "step_id": "relationships-actor"
+    },
+    "subject": {
+      "entity_type": "actor",
+      "canonical_id": "actor--sample-apt29",
+      "canonical_name": "APT29"
+    },
+    "relationship_types": ["campaign", "malware", "sector", "ioc", "technique"],
+    "max_results": 10
+  }' | jq .
+```
+
+Representative response excerpt:
+
+```json
+{
+  "request_id": "req_sample_actor_relationships",
+  "relationships": [
+    {
+      "relationship_type": "sector",
+      "target_name": "government",
+      "confidence": "medium",
+      "supporting_evidence": ["report--sample-apt29-sector"]
+    },
+    {
+      "relationship_type": "technique",
+      "target_name": "Phishing",
+      "confidence": "medium"
+    }
+  ]
+}
+```
+
+### 3. Retrieve observed activity evidence
+
+```bash
+curl -sS -X POST "$KYBERIS_BASE_URL/v2/evidence" \
+  -H "Authorization: ApiKey $KYBERIS_API_KEY_ID:$KYBERIS_API_KEY_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agent_context": {
+      "objective": "Check for current APT29 activity.",
+      "requested_outcome": "Bounded observed-activity evidence.",
+      "workflow_stage": "evidence",
+      "run_id": "run-actor-apt29-sample",
+      "step_id": "evidence-current-activity"
+    },
+    "subject": {
+      "entity_type": "actor",
+      "canonical_id": "actor--sample-apt29",
+      "canonical_name": "APT29"
+    },
+    "claim_type": "observed_in_the_wild",
+    "max_results": 5
+  }' | jq .
+```
+
+### 4. Run the actor assessment
+
+```bash
+curl -sS -X POST "$KYBERIS_BASE_URL/v2/actor-assessments" \
+  -H "Authorization: ApiKey $KYBERIS_API_KEY_ID:$KYBERIS_API_KEY_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agent_context": {
+      "objective": "Assess APT29 relevance and recommended action.",
+      "requested_outcome": "Deterministic actor risk guidance with caveats.",
+      "workflow_stage": "assessment",
+      "run_id": "run-actor-apt29-sample",
+      "step_id": "assessment-actor"
+    },
+    "query": "APT29",
+    "context": {
+      "targeted_industries": ["government", "technology"],
+      "intel_confidence": "medium"
+    }
+  }' | jq .
+```
+
+Representative response excerpt:
+
+```json
+{
+  "request_id": "req_sample_actor_assessment",
+  "recommendation": "hunt",
+  "priority": "medium",
+  "confidence_score": 0.74,
+  "evidence_refs": ["report--sample-apt29-sector"],
+  "caveats": ["Actor relevance depends on sector and exposed identity infrastructure."]
+}
+```
+
+## Final answer example
+
+**Recommendation:** Hunt for APT29-aligned phishing and identity abuse signals before making blocking decisions.
+
+**Why now:** Kyberis resolved APT29 with high confidence and found relationship context around government and technology targeting plus phishing-related techniques.
+
+**Confidence:** Medium-high for actor identity. Medium for environment relevance unless the customer has matching sector, identity, or cloud exposure.
+
+**Supporting evidence:** `report--sample-apt29-sector`. Request IDs: `req_sample_actor_resolve`, `req_sample_actor_relationships`, `req_sample_actor_assessment`.
+
+**Next actions:** Review identity-provider alerts, check recent phishing reports, and validate whether related indicators appear in DNS/proxy logs.
+## Decision gates
+
+- If `resolution.status` is `ambiguous`, show candidate actors and ask for clarification.
+- Treat relationships as pivots, not proof.
+- Use evidence calls to support current-activity or sector-targeting claims before recommending action.

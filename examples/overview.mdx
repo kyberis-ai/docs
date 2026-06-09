@@ -1,0 +1,43 @@
+---
+title: 'Sample investigations'
+description: 'Demo-ready Kyberis examples for PLG investigations, MCP sessions, and direct REST workflows.'
+---
+
+Use these samples when you need a concrete investigation flow instead of a conceptual playbook. Each example shows the starting prompt or scenario, the API or MCP sequence, representative response excerpts, and a final answer shape.
+
+<CardGroup cols={2}>
+  <Card title="CVE investigation" icon="shield-alert" href="/examples/cve-investigation">
+    Resolve a CVE, retrieve exploitation evidence, pivot relationships, and run a CVE assessment.
+  </Card>
+  <Card title="IOC assessment" icon="search-code" href="/examples/ioc-assessment">
+    Preserve exact IOC strings while checking evidence, relationships, and disposition.
+  </Card>
+  <Card title="Actor lookup" icon="user-search" href="/examples/actor-lookup">
+    Resolve actor aliases, pivot campaigns and malware, and return actor-focused guidance.
+  </Card>
+  <Card title="Domain and malware pivot" icon="code-branch" href="/examples/domain-malware-pivot">
+    Start from a domain, discover related malware or campaigns, and validate claims with evidence.
+  </Card>
+  <Card title="Environment prioritization" icon="arrow-up-wide-short" href="/examples/environment-prioritization">
+    Rank current threats for a described environment and validate the top signals.
+  </Card>
+  <Card title="MCP sessions" icon="plug" href="/examples/mcp-session-examples">
+    Prompt patterns and representative tool sequences for Kyberis-enabled agents.
+  </Card>
+  <Card title="REST scripts" icon="terminal" href="/examples/rest-scripts">
+    Runnable cURL and Python-oriented examples for direct API integrations.
+  </Card>
+</CardGroup>
+
+## How to use the examples
+
+- Use the workflow pages in [Threat investigations](/guides/investigate-cve) to understand the investigation model.
+- Use these sample pages to copy request structure, `agent_context`, and final answer shape.
+- Treat response excerpts as representative. Live responses can vary as intelligence changes.
+- Preserve `request_id`, `run_id`, `step_id`, evidence IDs, confidence, and caveats in demos and user-facing summaries.
+
+## Safety notes
+
+- Never paste live API keys, bearer tokens, or connect tokens into examples.
+- Do not present relationship pivots as proof without evidence.
+- Separate facts from inference in every final recommendation.

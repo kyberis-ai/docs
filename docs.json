@@ -47,6 +47,19 @@
             ]
           },
           {
+            "group": "Sample investigations",
+            "pages": [
+              "examples/overview",
+              "examples/cve-investigation",
+              "examples/ioc-assessment",
+              "examples/actor-lookup",
+              "examples/domain-malware-pivot",
+              "examples/environment-prioritization",
+              "examples/mcp-session-examples",
+              "examples/rest-scripts"
+            ]
+          },
+          {
             "group": "Interpret responses",
             "pages": [
               "responses/overview",

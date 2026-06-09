@@ -1,0 +1,108 @@
+---
+title: 'Sample MCP sessions'
+description: 'Prompt patterns and representative MCP tool sequences for Kyberis-enabled agents.'
+---
+
+These examples show how a Kyberis-enabled agent should behave when MCP tools are available. They are representative transcripts, not raw production logs. Keep request IDs, evidence IDs, confidence, and caveats in the final answer.
+
+## CVE prompt
+
+> Use Kyberis to investigate CVE-2024-3094 for a Linux build environment. Resolve the CVE, retrieve active exploitation evidence, pivot relationships, run the CVE assessment, and return a recommendation with evidence IDs and caveats.
+
+Expected MCP sequence:
+
+`entity_resolution` -> `evidence` -> `relationships` -> `cve_assessment`
+
+Representative tool calls:
+
+```json
+{
+  "tool": "entity_resolution",
+  "arguments": {
+    "query": "CVE-2024-3094",
+    "expected_types": ["cve"],
+    "resolution": { "max_results": 5, "include_metadata": true },
+    "agent_context": {
+      "objective": "Resolve CVE for assessment.",
+      "requested_outcome": "Canonical CVE entity.",
+      "workflow_stage": "resolve",
+      "run_id": "run-mcp-cve-sample",
+      "step_id": "resolve-cve"
+    }
+  }
+}
+```
+
+```json
+{
+  "tool": "evidence",
+  "arguments": {
+    "subject": {
+      "entity_type": "cve",
+      "canonical_id": "cve--CVE-2024-3094",
+      "canonical_name": "CVE-2024-3094"
+    },
+    "claim_type": "active_exploitation",
+    "max_results": 5,
+    "agent_context": {
+      "objective": "Check exploitation evidence.",
+      "requested_outcome": "Bounded active-exploitation evidence.",
+      "workflow_stage": "evidence",
+      "run_id": "run-mcp-cve-sample",
+      "step_id": "evidence-active-exploitation"
+    }
+  }
+}
+```
+
+Final answer shape:
+
+- **Recommendation:** patch, validate exposure, hunt, monitor, review controls, or ignore.
+- **Why now:** risk justification tied to evidence and environment.
+- **Confidence:** score or label plus caveats.
+- **Supporting evidence:** evidence IDs or report refs.
+- **Next actions:** one to three concrete actions.
+- **Request IDs:** request IDs for traceability.
+
+## Actor prompt
+
+> Use Kyberis to resolve Cozy Bear as an actor. If the result is ambiguous, show candidates instead of guessing. Then pivot relationships, retrieve observed activity evidence, and summarize the actor risk.
+
+Expected MCP sequence:
+
+`entity_resolution` -> `relationships` -> `evidence` -> `actor_assessment`
+
+Decision gates:
+
+- If `resolution.status` is `ambiguous`, stop and ask which actor the user means.
+- If relationship results are interesting but evidence is weak, present them as leads.
+- If actor assessment confidence is low, recommend monitoring or targeted validation.
+
+## IOC prompt
+
+> Use Kyberis to assess suspicious-domain.example as a domain. Preserve the exact domain string, retrieve observed-in-the-wild evidence, pivot relationships, and tell me whether to block, hunt, monitor, or ignore.
+
+Expected MCP sequence:
+
+`entity_resolution` -> `evidence` in query mode -> `relationships` -> `ioc_assessment` in query mode
+
+IOC-specific rules:
+
+- Use concrete `expected_types`, such as `domain`, `url`, `ip`, `hash`, or `email`.
+- Do not pass `ioc` as an expected type.
+- Prefer exact `query` mode for URL and observable evidence when canonicalization could lose detail.
+
+## Environment triage prompt
+
+> Use Kyberis to prioritize threats for a US healthcare company using Microsoft Exchange, Okta, Kubernetes, and public APIs. Validate the top two signals with evidence before recommending actions.
+
+Expected MCP sequence:
+
+`prioritize` -> `evidence` for the top signal -> `relationships` for the top signal -> assessment for the material item
+
+Final answer should separate:
+
+- ranked signals from `/v2/prioritize`
+- evidence-backed recommendations
+- assumptions about the environment
+- caveats and unresolved exposure checks
