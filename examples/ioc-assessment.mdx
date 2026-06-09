@@ -9,48 +9,73 @@ Use this sample when an alert contains a domain, URL, IP, hash, or email indicat
 
 An analyst asks:
 
-```text
-We saw login attempts from suspicious-domain.example. Is it known malicious, and should we block it?
-```
+> We saw login attempts from suspicious-domain.example. Is it known malicious, and should we block it?
 
 ## MCP session
 
 A good agent prompt is explicit about the workflow and exact-string handling.
 
-```text
-Use Kyberis to investigate suspicious-domain.example as a domain. Resolve it first, retrieve observed-in-the-wild and malware-association evidence, pivot relationships, then run an IOC assessment. Preserve request IDs, evidence IDs, confidence, and caveats.
-```
+> Use Kyberis to investigate suspicious-domain.example as a domain. Resolve it first, retrieve observed-in-the-wild and malware-association evidence, pivot relationships, then run an IOC assessment. Preserve request IDs, evidence IDs, confidence, and caveats.
 
 Representative MCP tool sequence:
 
-```text
-1. entity_resolution({
-     query: "suspicious-domain.example",
-     expected_types: ["domain"],
-     resolution: { max_results: 5, include_metadata: true },
-     agent_context: { workflow_stage: "resolve", run_id: "run-ioc-domain-sample", step_id: "resolve-domain" }
-   })
-
-2. evidence({
-     query: "suspicious-domain.example",
-     claim_type: "observed_in_the_wild",
-     max_results: 5,
-     agent_context: { workflow_stage: "evidence", run_id: "run-ioc-domain-sample", step_id: "evidence-observed" }
-   })
-
-3. relationships({
-     subject: { entity_type: "domain", canonical_name: "suspicious-domain.example" },
-     relationship_types: ["actor", "campaign", "malware", "indicator"],
-     max_results: 10,
-     agent_context: { workflow_stage: "relationships", run_id: "run-ioc-domain-sample", step_id: "relationships-domain" }
-   })
-
-4. ioc_assessment({
-     query: "suspicious-domain.example",
-     agent_context: { workflow_stage: "assessment", run_id: "run-ioc-domain-sample", step_id: "assessment-domain" }
-   })
+```json
+[
+  {
+    "tool": "entity_resolution",
+    "arguments": {
+      "query": "suspicious-domain.example",
+      "expected_types": ["domain"],
+      "resolution": { "max_results": 5, "include_metadata": true },
+      "agent_context": {
+        "workflow_stage": "resolve",
+        "run_id": "run-ioc-domain-sample",
+        "step_id": "resolve-domain"
+      }
+    }
+  },
+  {
+    "tool": "evidence",
+    "arguments": {
+      "query": "suspicious-domain.example",
+      "claim_type": "observed_in_the_wild",
+      "max_results": 5,
+      "agent_context": {
+        "workflow_stage": "evidence",
+        "run_id": "run-ioc-domain-sample",
+        "step_id": "evidence-observed"
+      }
+    }
+  },
+  {
+    "tool": "relationships",
+    "arguments": {
+      "subject": {
+        "entity_type": "domain",
+        "canonical_name": "suspicious-domain.example"
+      },
+      "relationship_types": ["campaign", "malware", "sector", "ioc", "technique"],
+      "max_results": 10,
+      "agent_context": {
+        "workflow_stage": "relationships",
+        "run_id": "run-ioc-domain-sample",
+        "step_id": "relationships-domain"
+      }
+    }
+  },
+  {
+    "tool": "ioc_assessment",
+    "arguments": {
+      "query": "suspicious-domain.example",
+      "agent_context": {
+        "workflow_stage": "assessment",
+        "run_id": "run-ioc-domain-sample",
+        "step_id": "assessment-domain"
+      }
+    }
+  }
+]
 ```
-
 Representative response excerpts:
 
 ```json
@@ -108,18 +133,15 @@ curl -sS -X POST "$KYBERIS_BASE_URL/v2/ioc-assessments" \
 
 ## Final answer example
 
-```text
-Recommendation: Block suspicious-domain.example at DNS and proxy controls, then hunt for recent access attempts.
+**Recommendation:** Block suspicious-domain.example at DNS and proxy controls, then hunt for recent access attempts.
 
-Why now: Kyberis found medium-confidence evidence that the domain appears in reporting about phishing infrastructure. The IOC assessment returned a suspicious disposition with a block recommendation.
+**Why now:** Kyberis found medium-confidence evidence that the domain appears in reporting about phishing infrastructure. The IOC assessment returned a suspicious disposition with a block recommendation.
 
-Confidence: Medium. The domain match is exact, but the sample evidence does not prove compromise in your environment.
+**Confidence:** Medium. The domain match is exact, but the sample evidence does not prove compromise in your environment.
 
-Supporting evidence: report--sample-domain-observed. Request IDs: req_sample_ioc_resolve, req_sample_ioc_evidence.
+**Supporting evidence:** `report--sample-domain-observed`. Request IDs: `req_sample_ioc_resolve`, `req_sample_ioc_evidence`.
 
-Next actions: block the domain, search authentication and proxy logs for the last 30 days, and review any successful logins from affected users.
-```
-
+**Next actions:** Block the domain, search authentication and proxy logs for the last 30 days, and review any successful logins from affected users.
 ## Decision gates
 
 - Preserve the original IOC string in the final answer.

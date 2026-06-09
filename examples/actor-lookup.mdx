@@ -9,9 +9,7 @@ Use this sample when a user asks about a named threat actor, alias, or intrusion
 
 A sales engineer asks for a demo investigation:
 
-```text
-Show how Kyberis investigates APT29 and returns evidence-backed recommendations.
-```
+> Show how Kyberis investigates APT29 and returns evidence-backed recommendations.
 
 ## REST flow
 
@@ -158,18 +156,15 @@ Representative response excerpt:
 
 ## Final answer example
 
-```text
-Recommendation: Hunt for APT29-aligned phishing and identity abuse signals before making blocking decisions.
+**Recommendation:** Hunt for APT29-aligned phishing and identity abuse signals before making blocking decisions.
 
-Why now: Kyberis resolved APT29 with high confidence and found relationship context around government and technology targeting plus phishing-related techniques.
+**Why now:** Kyberis resolved APT29 with high confidence and found relationship context around government and technology targeting plus phishing-related techniques.
 
-Confidence: Medium-high for actor identity. Medium for environment relevance unless the customer has matching sector, identity, or cloud exposure.
+**Confidence:** Medium-high for actor identity. Medium for environment relevance unless the customer has matching sector, identity, or cloud exposure.
 
-Supporting evidence: report--sample-apt29-sector. Request IDs: req_sample_actor_resolve, req_sample_actor_relationships, req_sample_actor_assessment.
+**Supporting evidence:** `report--sample-apt29-sector`. Request IDs: `req_sample_actor_resolve`, `req_sample_actor_relationships`, `req_sample_actor_assessment`.
 
-Next actions: review identity-provider alerts, check recent phishing reports, and validate whether related indicators appear in DNS/proxy logs.
-```
-
+**Next actions:** Review identity-provider alerts, check recent phishing reports, and validate whether related indicators appear in DNS/proxy logs.
 ## Decision gates
 
 - If `resolution.status` is `ambiguous`, show candidate actors and ask for clarification.

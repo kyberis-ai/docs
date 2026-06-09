@@ -7,15 +7,11 @@ These examples show how a Kyberis-enabled agent should behave when MCP tools are
 
 ## CVE prompt
 
-```text
-Use Kyberis to investigate CVE-2024-3094 for a Linux build environment. Resolve the CVE, retrieve active exploitation evidence, pivot relationships, run the CVE assessment, and return a recommendation with evidence IDs and caveats.
-```
+> Use Kyberis to investigate CVE-2024-3094 for a Linux build environment. Resolve the CVE, retrieve active exploitation evidence, pivot relationships, run the CVE assessment, and return a recommendation with evidence IDs and caveats.
 
 Expected MCP sequence:
 
-```text
-entity_resolution -> evidence -> relationships -> cve_assessment
-```
+`entity_resolution` -> `evidence` -> `relationships` -> `cve_assessment`
 
 Representative tool calls:
 
@@ -61,26 +57,20 @@ Representative tool calls:
 
 Final answer shape:
 
-```text
-Recommendation: <patch | validate_exposure | hunt | monitor | review_controls | ignore>
-Why now: <risk justification tied to evidence and environment>
-Confidence: <score/label plus caveats>
-Supporting evidence: <evidence IDs or report refs>
-Next actions: <1-3 concrete actions>
-Request IDs: <request IDs for traceability>
-```
+- **Recommendation:** patch, validate exposure, hunt, monitor, review controls, or ignore.
+- **Why now:** risk justification tied to evidence and environment.
+- **Confidence:** score or label plus caveats.
+- **Supporting evidence:** evidence IDs or report refs.
+- **Next actions:** one to three concrete actions.
+- **Request IDs:** request IDs for traceability.
 
 ## Actor prompt
 
-```text
-Use Kyberis to resolve Cozy Bear as an actor. If the result is ambiguous, show candidates instead of guessing. Then pivot relationships, retrieve observed activity evidence, and summarize the actor risk.
-```
+> Use Kyberis to resolve Cozy Bear as an actor. If the result is ambiguous, show candidates instead of guessing. Then pivot relationships, retrieve observed activity evidence, and summarize the actor risk.
 
 Expected MCP sequence:
 
-```text
-entity_resolution -> relationships -> evidence -> actor_assessment
-```
+`entity_resolution` -> `relationships` -> `evidence` -> `actor_assessment`
 
 Decision gates:
 
@@ -90,15 +80,11 @@ Decision gates:
 
 ## IOC prompt
 
-```text
-Use Kyberis to assess suspicious-domain.example as a domain. Preserve the exact domain string, retrieve observed-in-the-wild evidence, pivot relationships, and tell me whether to block, hunt, monitor, or ignore.
-```
+> Use Kyberis to assess suspicious-domain.example as a domain. Preserve the exact domain string, retrieve observed-in-the-wild evidence, pivot relationships, and tell me whether to block, hunt, monitor, or ignore.
 
 Expected MCP sequence:
 
-```text
-entity_resolution -> evidence(query mode) -> relationships -> ioc_assessment(query mode)
-```
+`entity_resolution` -> `evidence` in query mode -> `relationships` -> `ioc_assessment` in query mode
 
 IOC-specific rules:
 
@@ -108,15 +94,11 @@ IOC-specific rules:
 
 ## Environment triage prompt
 
-```text
-Use Kyberis to prioritize threats for a US healthcare company using Microsoft Exchange, Okta, Kubernetes, and public APIs. Validate the top two signals with evidence before recommending actions.
-```
+> Use Kyberis to prioritize threats for a US healthcare company using Microsoft Exchange, Okta, Kubernetes, and public APIs. Validate the top two signals with evidence before recommending actions.
 
 Expected MCP sequence:
 
-```text
-prioritize -> evidence(top signal) -> relationships(top signal) -> assessment(top material item)
-```
+`prioritize` -> `evidence` for the top signal -> `relationships` for the top signal -> assessment for the material item
 
 Final answer should separate:
 

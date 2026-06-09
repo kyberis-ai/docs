@@ -9,9 +9,7 @@ Use this sample when a user asks what deserves attention first for a specific en
 
 A customer asks:
 
-```text
-What should a US healthcare company running Microsoft Exchange, Okta, Kubernetes, and public APIs care about this week?
-```
+> What should a US healthcare company running Microsoft Exchange, Okta, Kubernetes, and public APIs care about this week?
 
 ## REST flow
 
@@ -96,21 +94,19 @@ curl -sS -X POST "$KYBERIS_BASE_URL/v2/evidence" \
 
 ## Final answer example
 
-```text
-Top action: Validate Exchange/OWA exposure first.
+**Top action:** Validate Exchange/OWA exposure first.
 
-Why now: Kyberis ranked the Exchange-related signal highest because it matched Microsoft Exchange, OWA exposure, US healthcare context, and recent supporting evidence.
+**Why now:** Kyberis ranked the Exchange-related signal highest because it matched Microsoft Exchange, OWA exposure, US healthcare context, and recent supporting evidence.
 
-Confidence: High for prioritization fit, medium-high for immediate action until exposure is confirmed.
+**Confidence:** High for prioritization fit, medium-high for immediate action until exposure is confirmed.
 
-Supporting evidence: report--sample-exchange-activity. Request ID: req_sample_prioritize.
+**Supporting evidence:** `report--sample-exchange-activity`. Request ID: `req_sample_prioritize`.
 
-Action plan:
+**Action plan:**
+
 1. Confirm whether public OWA is exposed and whether affected versions are present.
 2. Review recent authentication, proxy, and endpoint telemetry for Exchange exploitation indicators.
 3. Then evaluate identity phishing activity tied to federated identity and Okta.
-```
-
 ## Decision gates
 
 - Do not turn the entire signal list into equal-priority work.
