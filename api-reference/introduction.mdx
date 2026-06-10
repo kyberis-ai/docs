@@ -4,7 +4,7 @@ description: 'Threat Investigator API v2 for deterministic, evidence-backed thre
 ---
 
 The Kyberis Threat Investigator API helps machine consumers resolve entities,
-retrieve bounded evidence, pivot through relationships, prioritize signals, and
+retrieve bounded evidence, pivot through relationships, recommend hunt pivots, prioritize signals, and
 produce deterministic threat assessments.
 
 The API is intentionally LLM-free on the serving path. Use it when you need
@@ -60,7 +60,7 @@ Required fields:
 - `step_id`
 
 Allowed `workflow_stage` values include `resolve`, `evidence`,
-`relationships`, `assessment`, `hydrate`, `batch`, `finalize`, and `other`.
+`relationships`, `assessment`, `hunt`, `hydrate`, `batch`, `finalize`, and `other`.
 
 ```json
 {
@@ -101,9 +101,10 @@ Use this default workflow for threat investigations:
    disambiguation.
 3. Retrieve claim-level evidence with `POST /v2/evidence`.
 4. Pivot from canonical entities with `POST /v2/relationships`.
-5. Use `POST /v2/prioritize` for environment-aware triage.
-6. Use the matching assessment endpoint for a deterministic verdict.
-7. Hydrate referenced entities and evidence by ID when you need bounded detail.
+5. Use `POST /v2/hunt-pivots` when agents need ranked next investigative actions.
+6. Use `POST /v2/prioritize` for environment-aware triage.
+7. Use the matching assessment endpoint for a deterministic verdict.
+8. Hydrate referenced entities and evidence by ID when you need bounded detail.
 
 ## Endpoint groups
 

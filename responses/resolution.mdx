@@ -5,6 +5,17 @@ description: 'Interpret resolved, ambiguous, and not_found entity-resolution res
 
 Entity resolution answers what a raw input refers to in Kyberis.
 
+## Response envelope
+
+`/v2/entity-resolution` returns:
+
+| Field | Meaning |
+| --- | --- |
+| `input` | Normalized echo of the submitted query and requested type constraints. |
+| `resolution` | Resolution result object containing status, canonical entity details, candidates, and confidence fields. |
+
+Batch resolution responses use the standard batch envelope described in [Batch responses](/responses/batches).
+
 ## Status values
 
 | Status | Meaning | Agent action |

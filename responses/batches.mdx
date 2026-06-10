@@ -5,6 +5,26 @@ description: 'Interpret per-item results from Kyberis batch endpoints.'
 
 Batch endpoints return item-level outcomes. Agents should preserve the status of every item.
 
+## Response envelope
+
+Batch endpoints return an envelope with per-item results and batch metadata:
+
+| Field | Meaning |
+| --- | --- |
+| `items` | Per-item results in request order. |
+| `metadata` | Batch-level counts, timing, truncation, and implementation notes when provided. |
+
+Each `items` entry has:
+
+| Field | Meaning |
+| --- | --- |
+| `index` | Zero-based position of the original request item. |
+| `status` | Item outcome, independent of the HTTP status for the batch. |
+| `result` | Endpoint-specific response payload for successful items. |
+| `error` | Item-level error details for failed items. |
+
+Each item should be interpreted independently. A successful HTTP response can still contain item-level failures.
+
 ## Agent behavior
 
 - Report successes, ambiguous items, validation failures, and access failures separately.

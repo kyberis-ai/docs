@@ -44,6 +44,7 @@ Different endpoints require different scopes. Common examples:
 | `read:relationships` | Relationship pivots |
 | `read:intel` | General intelligence search |
 | `read:prioritize` | Environment-aware ranking |
+| `read:hunt_pivots` | Hunt pivot recommendations |
 | `read:assessments` | Deterministic assessment endpoints |
 | `batch:*` | Batch variants of the read endpoints |
 
@@ -65,7 +66,7 @@ All investigation `POST` calls should include `agent_context`.
 }
 ```
 
-Allowed workflow stages are `resolve`, `evidence`, `relationships`, `assessment`, `hydrate`, `batch`, `finalize`, and `other`.
+Allowed workflow stages are `resolve`, `evidence`, `relationships`, `assessment`, `hunt`, `hydrate`, `batch`, `finalize`, and `other`.
 
 ## Hydration headers
 

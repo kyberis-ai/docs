@@ -5,6 +5,18 @@ description: 'Interpret environment-aware signal ranking responses.'
 
 `/v2/prioritize` returns normalized signal cards ranked for the provided environment.
 
+## Response envelope
+
+`/v2/prioritize` returns:
+
+| Field | Meaning |
+| --- | --- |
+| `generated_at` | Timestamp when the ranking was produced. |
+| `window_start` | Start of the ranking time window. |
+| `window_end` | End of the ranking time window. |
+| `items` | Ranked signal cards for the environment. |
+| `meta` | Candidate counts, ranked counts, truncation, requested categories, implemented categories, and budget details. |
+
 ## Item fields
 
 | Field | Meaning |
@@ -24,10 +36,6 @@ description: 'Interpret environment-aware signal ranking responses.'
 | `what_changed` | Meaningful change since prior view |
 | `recommended_action_type` | Action category |
 | `recommended_action_summary` | Short action guidance |
-
-## Meta fields
-
-`meta` can include candidate count, ranked count, truncation, requested and implemented categories, and budget details.
 
 ## Agent guidance
 

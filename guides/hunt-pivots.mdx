@@ -1,0 +1,94 @@
+---
+title: Recommend hunt pivots
+description: Use ranked hunt pivot recommendations to decide the next investigative actions.
+---
+
+Use `/v2/hunt-pivots` when an agent needs concrete hunt actions after resolving a subject, reviewing an observation, or finding ambiguous threat context.
+
+Hunt pivots are next-step recommendations, not findings. Treat each pivot as a bounded question to answer with telemetry, evidence, relationships, or assessments.
+
+## When to use hunt pivots
+
+Use hunt pivots when the investigation needs an action plan such as:
+
+- what telemetry to query next
+- which related indicators to expand
+- which techniques or behaviors to hunt for
+- which exposed assets or identities to check
+- whether to continue hunting, collect more context, or stop
+
+For environment-wide ranking, use `/v2/prioritize`. For graph context around known entities, use `/v2/relationships`. Use hunt pivots when you need ranked investigation actions.
+
+## Subject-led requests
+
+Use subject-led requests when you already have a canonical threat subject, such as an actor, malware family, campaign, CVE, domain, IP, URL, hash, or email.
+
+```json
+{
+  "subject": {
+    "entity_type": "actor",
+    "canonical_id": "actor--apt29",
+    "canonical_name": "APT29"
+  },
+  "objective": "Find likely follow-up hunts for recent activity.",
+  "max_pivots": 5,
+  "agent_context": {
+    "objective": "Recommend hunt pivots for a resolved actor.",
+    "requested_outcome": "Return ranked next investigative actions.",
+    "workflow_stage": "hunt",
+    "run_id": "run-001",
+    "step_id": "hunt-001"
+  }
+}
+```
+
+## Observation-led requests
+
+Use observation-led requests when you have telemetry or a partial observation but no resolved canonical subject yet.
+
+```json
+{
+  "observation": {
+    "entity_type": "domain",
+    "value": "example-suspicious-domain.test",
+    "context": "Observed in proxy logs from an executive workstation."
+  },
+  "objective": "Identify practical pivots for triage.",
+  "max_pivots": 5,
+  "agent_context": {
+    "objective": "Recommend hunt pivots from a suspicious observation.",
+    "requested_outcome": "Return bounded next investigative actions.",
+    "workflow_stage": "hunt",
+    "run_id": "run-002",
+    "step_id": "hunt-001"
+  }
+}
+```
+
+## Workflow
+
+1. Resolve the subject first when practical.
+2. Call `/v2/hunt-pivots` with either `subject` or `observation` and a clear `objective`.
+3. Review `recommended_pivots` by `priority`, `confidence`, and `why`.
+4. Execute only the top bounded pivots that match the requester environment and available telemetry.
+5. Validate material conclusions with evidence, relationships, or the relevant assessment endpoint.
+6. Preserve `request_id`, pivot questions, caveats, and evidence references in the final answer.
+
+## Interpret recommendations
+
+Each recommended pivot includes:
+
+- `pivot_type`: hunt category such as `network_pivot`, `process_pivot`, `technique_hunt`, `ioc_expansion`, or `asset_exposure_check`
+- `priority`: relative order for follow-up
+- `question`: the investigation question to answer
+- `why`: rationale for the pivot
+- `data_to_collect`: telemetry or context needed
+- `success_criteria`: what would make the pivot useful
+- `confidence`: confidence in the recommendation, not proof of compromise
+- `caveats`: limits and assumptions
+
+Use `next_decision` to decide whether to continue, collect more context, or stop.
+
+## Scope and credits
+
+`/v2/hunt-pivots` requires `read:hunt_pivots` and consumes 8 credits per request.
