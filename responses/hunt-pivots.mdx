@@ -10,6 +10,21 @@ and what telemetry fields to collect.
 Use `/v2/relationships` instead when you only need related actors, campaigns,
 malware, sectors, indicators, or techniques for a resolved subject.
 
+## Response envelope
+
+`/v2/hunt-pivots` returns:
+
+| Field | Meaning |
+| --- | --- |
+| `mode` | Request mode: `subject_led` or `observation_led`. |
+| `resolution_status` | Whether Kyberis resolved the subject or proceeded from an unresolved observation. |
+| `subject` | Resolved or submitted subject context when available. |
+| `likely_attack_chains` | ATT&CK-aligned hypotheses that may explain the subject or observation. |
+| `recommended_pivots` | Ranked hunt actions for the customer agent to execute. |
+| `next_decision` | Recommendation for whether to continue, collect more context, escalate, suppress, or stop. |
+| `caveats` | Top-level limitations and assumptions for the response. |
+| `metadata` | Request and generation metadata, including degradation or implementation details. |
+
 ## Modes
 
 | Mode | Use when |
@@ -48,7 +63,3 @@ hypotheses until customer-local telemetry confirms them.
 `next_decision` summarizes whether the agent should continue hunting, collect
 more context, escalate, or suppress. Preserve the recommendation and reason in
 agent output so analysts can see why the workflow continued.
-
-## Credits and scope
-
-`/v2/hunt-pivots` requires `read:hunt_pivots` and consumes 8 credits per request.

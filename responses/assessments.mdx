@@ -13,6 +13,29 @@ Assessment endpoints turn resolved subject context and evidence into determinist
 - `/v2/environment-assessments`
 - `/v2/ioc-assessments`
 
+## Response envelope
+
+Assessment endpoints return:
+
+| Field | Meaning |
+| --- | --- |
+| `assessment_type` | Assessment family used for the response. |
+| `trace_id` | Request correlation ID for support and audit. |
+| `input` | Normalized request input used by the assessment. |
+| `priority` | Deterministic priority or verdict output. |
+| `confidence` | Confidence in the assessment result. |
+| `rationale_codes` | Machine-readable reasons for the result. |
+| `evidence_refs` | Evidence references supporting the result. |
+| `recommended_actions` | Bounded actions for the agent or analyst. |
+| `signals` | Structured signals considered by the assessment. |
+| `caveats` | Limits, assumptions, and unresolved gaps. |
+| `metadata` | Assessment metadata, degradation details, and implementation notes. |
+| `timestamp` | Response generation timestamp. |
+| `resolution` | Resolution context when the request started from a query or subject. |
+| `debug` | Optional diagnostics when debug access is granted. |
+
+Batch assessment responses use the standard batch envelope described in [Batch responses](/responses/batches).
+
 ## What to preserve
 
 - assessment result or verdict

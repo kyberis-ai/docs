@@ -5,6 +5,25 @@ description: 'Interpret claim-based evidence retrieval responses.'
 
 Evidence responses support or weaken specific claims. Use focused evidence calls so each result maps to a clear question.
 
+## Response envelope
+
+`/v2/evidence` returns:
+
+| Field | Meaning |
+| --- | --- |
+| `status` | Retrieval status for the request. |
+| `input_mode` | Whether the request used `subject` or `query` mode. |
+| `resolution` | Entity resolution context when applicable. |
+| `subject` | Resolved or submitted subject context when available. |
+| `claim_type` | Evidence claim being tested. |
+| `context` | Request context used to constrain retrieval. |
+| `max_results` | Requested result limit. |
+| `items` | Evidence items returned for the claim. |
+| `next_cursor` | Pagination cursor when additional results are available. |
+| `metadata` | Retrieval metadata, degradation details, and implementation notes. |
+
+Batch evidence responses use the standard batch envelope described in [Batch responses](/responses/batches).
+
 ## Claim types
 
 Use only these claim types:

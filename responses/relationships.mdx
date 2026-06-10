@@ -5,6 +5,24 @@ description: 'Interpret bounded relationship pivots between canonical entities a
 
 Relationship responses help agents discover pivots. Treat them as connected context, then validate important claims with evidence.
 
+## Response envelope
+
+`/v2/relationships` returns:
+
+| Field | Meaning |
+| --- | --- |
+| `status` | Retrieval status for the request. |
+| `input_mode` | Whether the request used `subject` or `query` mode. |
+| `resolution` | Entity resolution context when applicable. |
+| `subject` | Resolved or submitted subject context when available. |
+| `relationship_types` | Relationship categories requested or applied. |
+| `max_results` | Requested result limit. |
+| `items` | Related entities, indicators, techniques, or other relationship records. |
+| `next_cursor` | Pagination cursor when additional results are available. |
+| `metadata` | Retrieval metadata, degradation details, and implementation notes. |
+
+Batch relationship responses use the standard batch envelope described in [Batch responses](/responses/batches).
+
 ## Key fields
 
 Relationship items may include:
