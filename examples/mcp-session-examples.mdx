@@ -91,6 +91,7 @@ IOC-specific rules:
 - Use concrete `expected_types`, such as `domain`, `url`, `ip`, `hash`, or `email`.
 - Do not pass `ioc` as an expected type.
 - Prefer exact `query` mode for URL and observable evidence when canonicalization could lose detail.
+- Use `/relationships` with `relationship_types: ["ioc"]` for related IOC expansion; `/ioc_assessment` assesses the submitted IOC itself.
 
 ## Environment triage prompt
 

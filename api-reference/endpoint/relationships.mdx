@@ -9,3 +9,11 @@ openapi: 'POST /v2/relationships'
 | --- | --- |
 | Required scopes | `read:relationships` |
 | Credits | 3 credits per request |
+
+## IOC relationship behavior
+
+`/v2/relationships` accepts IOC subjects with concrete `entity_type` values: `ip`, `domain`, `url`, `hash`, or `email`.
+
+For IOC subjects, request `relationship_types: ["ioc"]` to retrieve related indicators from event-correlation context. You may also request `actor`, `campaign`, or `malware` relationships for attribution-style context when available.
+
+Do not use `ioc` as a subject `entity_type`; use the concrete observable type.

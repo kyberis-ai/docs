@@ -18,6 +18,8 @@ Supported relationship types include:
 
 For CVE subjects, `technique` pivots through the vulnerability described by the CVE.
 
+For IOC subjects, `ioc` pivots through event-correlation context to related indicators. Use concrete IOC entity types (`ip`, `domain`, `url`, `hash`, or `email`) rather than `ioc` as the subject type.
+
 ## Workflow
 
 1. Start from a resolved `subject` when possible.

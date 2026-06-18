@@ -34,6 +34,12 @@ Relationship items may include:
 - supporting evidence references
 - pagination cursor fields
 
+## IOC relationship expansion
+
+For IOC subjects (`ip`, `domain`, `url`, `hash`, or `email`), `relationship_types: ["ioc"]` returns related indicators from event-correlation context when available. This is the supported path for IOC expansion; `/v2/ioc-assessments` does not return correlated IOCs inline.
+
+IOC relationship items use `relationship_type: "ioc"`, `target_entity_type: "ioc"`, and include `metadata.indicator_type` when known. Treat these as pivots for hunting or blocking review, not proof by themselves.
+
 ## How to use relationships
 
 Use relationships to select the next investigation step:

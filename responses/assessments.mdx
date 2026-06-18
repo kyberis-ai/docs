@@ -46,6 +46,12 @@ Batch assessment responses use the standard batch envelope described in [Batch r
 - `trace_id`
 - request correlation fields
 
+## IOC assessments
+
+`/v2/ioc-assessments` focuses on the submitted IOC and returns deterministic disposition, confidence, caveats, and recommended actions for that observable. It does not include event-correlated IOC expansion inline.
+
+When an agent needs related indicators, call `/v2/relationships` for the same IOC subject with `relationship_types: ["ioc"]`. This keeps assessment responses fast and separates verdict generation from pivot expansion.
+
 ## Subject and query modes
 
 For evidence, relationships, and assessments, provide exactly one of `subject` or `query`.
