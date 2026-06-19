@@ -15,7 +15,7 @@ An analyst asks:
 
 A good agent prompt is explicit about the workflow and exact-string handling.
 
-> Use Kyberis to investigate suspicious-domain.example as a domain. Resolve it first, retrieve observed-in-the-wild and malware-association evidence, pivot relationships, then run an IOC assessment. Preserve request IDs, evidence IDs, confidence, and caveats.
+> Use Kyberis to investigate suspicious-domain.example as a domain. Resolve it first, retrieve observed-in-the-wild and malware-association evidence, pivot relationships including related IOCs, then run an IOC assessment. Preserve request IDs, evidence IDs, confidence, and caveats.
 
 Representative MCP tool sequence:
 
@@ -110,6 +110,10 @@ Representative response excerpts:
   "caveats": ["Confirm whether traffic was user-initiated or automated before broad containment."]
 }
 ```
+
+## Contract note
+
+The relationships step is where related IOC expansion happens. The IOC assessment step assesses `suspicious-domain.example` itself and does not return event-correlated indicators inline.
 
 ## REST fallback
 

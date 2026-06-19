@@ -9,3 +9,9 @@ openapi: 'POST /v2/ioc-assessments'
 | --- | --- |
 | Required scopes | `read:assessments` |
 | Credits | 6 credits per request |
+
+## IOC assessment behavior
+
+`/v2/ioc-assessments` assesses the submitted IOC itself. It may enrich the assessment with intelligence about the exact IP, domain, URL, hash, or email subject, but it does not expand event-correlated or co-occurring IOCs inline.
+
+Use `/v2/relationships` with `relationship_types: ["ioc"]` when you need related indicators or event-correlation pivots for an IOC subject.

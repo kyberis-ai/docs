@@ -9,9 +9,13 @@ Use this workflow for observables from SIEM, EDR, firewall, email, or alerting s
 
 1. Resolve the observable with concrete expected types: `ip`, `domain`, `url`, `hash`, or `email`.
 2. Retrieve evidence for `observed_in_the_wild`, `malware_association`, `campaign_association`, or `actor_association`.
-3. Pivot relationships to actors, campaigns, malware, sectors, and related indicators.
-4. Run `/v2/ioc-assessments`.
+3. Pivot relationships to actors, campaigns, malware, sectors, and related indicators. Use `relationship_types: ["ioc"]` for event-correlated IOC expansion.
+4. Run `/v2/ioc-assessments` for disposition and recommended action on the submitted IOC.
 5. Retry in exact `query` mode when canonicalization may lose URL or observable detail.
+
+## Assessment vs. expansion
+
+IOC assessment and IOC expansion are separate calls. `/v2/ioc-assessments` assesses the submitted observable; `/v2/relationships` discovers related indicators and other pivots.
 
 ## Important rule
 
