@@ -162,8 +162,8 @@
     }
   },
   "logo": {
-    "light": "/logo/kyberis-logo.png",
-    "dark": "/logo/kyberis-logo.png"
+    "light": "/images/kyberis-dark.png",
+    "dark": "/images/kyberis-dark.png"
   },
   "navbar": {
     "links": [
