@@ -3,9 +3,9 @@
   "theme": "mint",
   "name": "Kyberis Developer Portal",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#34E0D4",
+    "light": "#34E0D4",
+    "dark": "#34E0D4"
   },
   "favicon": "/favicon.png",
   "navigation": {
