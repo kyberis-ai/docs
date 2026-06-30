@@ -194,5 +194,11 @@
     "socials": {
       "linkedin": "https://www.linkedin.com/company/kyberis-ai"
     }
+  },
+  "integrations": {
+    "posthog": {
+      "apiKey": "phc_rcgDFyVZ3kkx4nU4DSbDnMozmz3t9evvRRKUipBbj7Wg",
+      "sessionRecording": true
+    }
   }
 }
