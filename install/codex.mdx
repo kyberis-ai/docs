@@ -1,38 +1,128 @@
 ---
-title: 'Codex setup'
-description: 'Connect Codex to Kyberis through MCP.'
+title: 'Codex Desktop setup'
+description: 'Connect Codex Desktop to Kyberis MCP and install the Kyberis skill.'
 ---
 
-## Install the skill
+Use this guide to add Kyberis to Codex Desktop. MCP gives Codex callable Kyberis tools. The Kyberis skill gives Codex investigation instructions for resolving entities, collecting evidence, pivoting relationships, and running assessments.
 
-Install the Kyberis skill so Codex has the investigation workflow and response handling rules.
+## Prerequisites
+
+- Codex Desktop installed and signed in
+- A Kyberis account with access to the workspace you want Codex to use
+- Node.js 20 or newer for installing the Kyberis skill
+- Permission to authenticate the Kyberis MCP server through your browser
+
+Do not paste API keys, access tokens, or bearer tokens into screenshots, commits, issues, or shared chat logs. Use the Codex Desktop OAuth login flow for MCP when possible. Store long-lived credentials in a local secret manager or another secure local store.
+
+## 1. Open Codex Desktop settings
+
+Open Codex Desktop and select **Settings** from the lower-left account menu.
+
+![Codex Desktop home screen with Settings visible in the sidebar.](/images/codex-getting-started/01-codex-open.png)
+
+![Codex Desktop account menu with Settings selected. The account email is redacted.](/images/codex-getting-started/02-open-settings.png)
+
+## 2. Open MCP servers
+
+In **Settings**, select **MCP servers** under **Integrations**.
+
+![Codex Desktop settings with MCP servers selected.](/images/codex-getting-started/03-settings-open.png)
+
+Select **Add server**.
+
+![Codex Desktop MCP servers settings with Add server visible.](/images/codex-getting-started/04-mcp-servers.png)
+
+## 3. Add the Kyberis MCP server
+
+Create a custom MCP server:
+
+| Field | Value |
+| --- | --- |
+| **Name** | `Kyberis` |
+| **Transport** | **Streamable HTTP** |
+| **URL** | `https://mcp.kyberis.ai` |
+
+Leave token and header fields empty unless your Kyberis administrator gives you a specific credential flow. Select **Save**.
+
+![Codex Desktop custom MCP form with Kyberis, Streamable HTTP, and the Kyberis MCP URL configured.](/images/codex-getting-started/05-create-kyberis-mcp.png)
+
+## 4. Authenticate MCP
+
+Open a terminal and run:
+
+```bash
+codex mcp login kyberis
+```
+
+Use the same server name you entered in Codex Desktop. If Codex registered the server as `Kyberis`, use:
+
+```bash
+codex mcp login Kyberis
+```
+
+Codex prints an authorization URL. Open it in your browser and complete the Kyberis login.
+
+![Terminal running codex mcp login kyberis.](/images/codex-getting-started/06-login-to-mcp.png)
+
+After you complete auth, Codex reports that it logged in to the Kyberis MCP server.
+
+![Terminal showing successful Kyberis MCP login. The authorization URL is redacted.](/images/codex-getting-started/07-terminal-auth-url.png)
+
+You may see a local browser callback page that says authentication is complete.
+
+![Browser callback page showing authentication complete. The callback state value is redacted.](/images/codex-getting-started/08-auth-complete.png)
+
+## 5. Install the Kyberis skill
+
+Install the Kyberis skill for Codex:
 
 ```bash
 npx -y @kyberis-ai/agent-skills install codex
 ```
 
-## Connect MCP
+![Terminal running the Kyberis skill install command for Codex.](/images/codex-getting-started/10-install-skill.png)
+
+The installer writes the skill to `~/.codex/skills/kyberis`. Restart Codex Desktop after installation so the skill is available in new chats.
+
+To check the installed skill later, run:
 
 ```bash
-npx -y @kyberis-ai/mcp connect codex --token kct_abc123
+npx -y @kyberis-ai/agent-skills status codex
 ```
 
-The connector updates `~/.codex/config.toml` by default. Use `--dry-run` to print TOML for Codex MCP configuration without changing local config:
+## 6. Verify tools and skill behavior
 
-```toml
-[mcp_servers.kyberis]
-url = "<mcp_url>"
-headers = { Authorization = "Bearer <token>" }
-```
-
-## Verify
-
-Ask Codex:
+Start a new Codex Desktop chat in the workspace where you want to use Kyberis. Ask Codex to list the Kyberis MCP tools:
 
 ```text
-Use Kyberis to resolve CVE-2024-3094, retrieve active exploitation evidence, and run a CVE assessment.
+List the tools in Kyberis MCP.
 ```
 
-## Recommended behavior
+![Codex Desktop verification prompt asking Codex to list Kyberis MCP tools.](/images/codex-getting-started/09-list-tools.png)
 
-Instruct Codex to preserve `request_id`, `run_id`, `step_id`, evidence IDs, confidence, and caveats in investigation summaries.
+Then verify that the skill is guiding the workflow:
+
+```text
+Use the Kyberis skill. Resolve CVE-2024-3094 as a CVE, retrieve evidence for active exploitation, and run a CVE assessment. Preserve request IDs, evidence IDs, confidence, and caveats.
+```
+
+A working setup should call Kyberis tools through MCP, separate facts from inference, and preserve `request_id`, evidence IDs, confidence, and caveats in the response.
+
+## Troubleshooting
+
+| Problem | Fix |
+| --- | --- |
+| No Kyberis tools are visible | Confirm the MCP server is enabled in **Settings** > **MCP servers**, restart Codex Desktop, and run `codex mcp login kyberis` again. |
+| `codex mcp login kyberis` cannot find the server | Check the server name in Codex Desktop. If the UI saved it as `Kyberis`, run `codex mcp login Kyberis`. |
+| Login opens but does not complete | Retry in the same browser profile you use for Kyberis. If the callback page never appears, restart Codex Desktop and run `codex mcp login kyberis` again. |
+| Invalid MCP credentials | Remove the Kyberis MCP server, add it again with `https://mcp.kyberis.ai`, and repeat the login flow. Do not paste expired bearer tokens into the server config. |
+| The skill is not available | Run `npx -y @kyberis-ai/agent-skills status codex`. If it is missing, run `npx -y @kyberis-ai/agent-skills install codex` and restart Codex Desktop. |
+| Codex uses the wrong workspace or project | Select the intended workspace or project in Codex Desktop before verification. Re-run the verification prompt from that workspace. |
+| A Kyberis tool returns `insufficient_scope` | Ask your Kyberis administrator for access to the required scope, then re-authenticate the MCP server. |
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Install skills" icon="/icons/skill.svg" href="/install/skills" />
+  <Card title="Connect MCP" icon="/icons/mcp.svg" href="/install/mcp" />
+</CardGroup>
